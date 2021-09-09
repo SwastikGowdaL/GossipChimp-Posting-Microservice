@@ -61,7 +61,9 @@ const gossipSchema = new mongoose.Schema({
   pic_id: {
     type: String,
   },
-  link: String,
+  link: {
+    type: String,
+  },
 });
 
 const Gossip = mongoose.model('Gossip', gossipSchema);

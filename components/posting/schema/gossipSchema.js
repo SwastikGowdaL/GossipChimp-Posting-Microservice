@@ -1,4 +1,4 @@
-const ajvInstance = require('./ajv-instance');
+const ajvInstance = require('./ajvInstance');
 
 const schema = {
   type: 'object',
@@ -28,7 +28,6 @@ const schema = {
     hashtags: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 1,
     },
   },
   required: ['gossip', 'author_id', 'author_name', 'author_pic_id', 'hashtags'],
