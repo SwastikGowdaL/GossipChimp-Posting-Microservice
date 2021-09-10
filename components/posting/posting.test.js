@@ -5,6 +5,15 @@ const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const { Error } = require('./postingErrors');
 
+const authError = {
+  status: 'Error',
+  message: 'Unauthorized',
+};
+
+const success = {
+  status: 'success',
+};
+
 beforeAll(async () => {
   if (config.ENV !== 'test') {
     throw new Error('ENV should be changed to test');
@@ -19,6 +28,7 @@ afterAll(() => {
 test('invalid gossip body', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 12345,
       hashtags: ['celebrity', 'cs'],
@@ -33,6 +43,7 @@ test('invalid gossip body', async () => {
 test('invalid gossip hashtags', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate!',
       hashtags: ['celebrity', 12345],
@@ -47,6 +58,7 @@ test('invalid gossip hashtags', async () => {
 test('invalid gossip author_id', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -61,6 +73,7 @@ test('invalid gossip author_id', async () => {
 test('invalid gossip author_name', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -75,6 +88,7 @@ test('invalid gossip author_name', async () => {
 test('invalid gossip author_authorized', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -87,6 +101,7 @@ test('invalid gossip author_authorized', async () => {
 
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -101,6 +116,7 @@ test('invalid gossip author_authorized', async () => {
 test('invalid gossip author_pic_id', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -115,6 +131,7 @@ test('invalid gossip author_pic_id', async () => {
 test('invalid gossip link', async () => {
   await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate',
       hashtags: ['celebrity', 'cs'],
@@ -130,6 +147,7 @@ test('invalid gossip link', async () => {
 test('valid gossip data', async () => {
   const gossip = await request(app)
     .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
     .send({
       gossip: 'hello there mate jest testing!',
       hashtags: ['celebrity', 'cs'],
@@ -140,5 +158,59 @@ test('valid gossip data', async () => {
       link: 'link',
     })
     .expect(201);
-  expect(gossip.body.status).toBe('success');
+  expect(gossip.body).toMatchObject(success);
+});
+
+test('missing auth key', async () => {
+  const gossip = await request(app)
+    .post('/posting')
+    .send({
+      gossip: 'hello there mate jest testing!',
+      hashtags: ['celebrity', 'cs'],
+      author_id: 'author_id',
+      author_name: 'author_name',
+      author_authorized: 1,
+      author_pic_id: 'author_pic_id',
+      link: 'link',
+    })
+    .expect(401);
+  expect(gossip.body).toMatchObject(authError);
+});
+
+test('invalid auth key', async () => {
+  const gossip = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .set(
+      'AUTH_KEY',
+      'THIS_KEY_MAKES_SURE_THAT_THE_REQUEST_FROM_THE_CLIENT_IS_NOT_VERIFIED'
+    )
+    .send({
+      gossip: 'hello there mate jest testing!',
+      hashtags: ['celebrity', 'cs'],
+      author_id: 'author_id',
+      author_name: 'author_name',
+      author_authorized: 1,
+      author_pic_id: 'author_pic_id',
+      link: 'link',
+    })
+    .expect(401);
+  expect(gossip.body).toMatchObject(authError);
+});
+
+test('valid auth key', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .send({
+      gossip: 'hello there mate jest testing!',
+      hashtags: ['celebrity', 'cs'],
+      author_id: 'author_id',
+      author_name: 'author_name',
+      author_authorized: 1,
+      author_pic_id: 'author_pic_id',
+      link: 'link',
+    })
+    .expect(201);
+  expect(gossipData.body).toMatchObject(success);
 });
