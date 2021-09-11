@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1631264572687" clover="3.2.0">
-  <project timestamp="1631264572687" name="All files">
-    <metrics statements="79" coveredstatements="73" conditionals="8" coveredconditionals="6" methods="11" coveredmethods="7" elements="98" coveredelements="86" complexity="0" loc="79" ncloc="79" packages="7" files="14" classes="14"/>
+<coverage generated="1631360353857" clover="3.2.0">
+  <project timestamp="1631360353857" name="All files">
+    <metrics statements="96" coveredstatements="91" conditionals="14" coveredconditionals="11" methods="14" coveredmethods="12" elements="124" coveredelements="114" complexity="0" loc="96" ncloc="96" packages="7" files="15" classes="15"/>
     <package name="GossipChimp">
-      <metrics statements="11" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="app.js" path="D:\Projects\GossipChimp\app.js">
-        <metrics statements="11" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -15,35 +15,42 @@
         <line num="8" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="18" count="1" type="stmt"/>
       </file>
     </package>
     <package name="GossipChimp.components.posting">
-      <metrics statements="30" coveredstatements="26" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="3"/>
+      <metrics statements="45" coveredstatements="41" conditionals="6" coveredconditionals="5" methods="8" coveredmethods="7"/>
       <file name="index.js" path="D:\Projects\GossipChimp\components\posting\index.js">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
       </file>
       <file name="postingController.js" path="D:\Projects\GossipChimp\components\posting\postingController.js">
-        <metrics statements="9" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <metrics statements="9" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
-        <line num="10" count="2" type="stmt"/>
-        <line num="11" count="2" type="stmt"/>
-        <line num="12" count="2" type="stmt"/>
-        <line num="13" count="2" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="7" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
       </file>
       <file name="postingDAL.js" path="D:\Projects\GossipChimp\components\posting\postingDAL.js">
-        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <metrics statements="13" coveredstatements="12" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="4" count="2" type="stmt"/>
-        <line num="5" count="2" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="27" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
       </file>
       <file name="postingErrors.js" path="D:\Projects\GossipChimp\components\posting\postingErrors.js">
         <metrics statements="3" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
@@ -58,38 +65,51 @@
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
-        <line num="11" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
       </file>
       <file name="postingService.js" path="D:\Projects\GossipChimp\components\posting\postingService.js">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
       </file>
     </package>
     <package name="GossipChimp.components.posting.middleware">
-      <metrics statements="14" coveredstatements="14" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
+      <metrics statements="18" coveredstatements="18" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
       <file name="auth.js" path="D:\Projects\GossipChimp\components\posting\middleware\auth.js">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="4" count="12" type="stmt"/>
-        <line num="5" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="4" count="13" type="stmt"/>
+        <line num="5" count="13" type="cond" truecount="2" falsecount="0"/>
         <line num="6" count="2" type="stmt"/>
-        <line num="11" count="10" type="stmt"/>
+        <line num="11" count="11" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
+      </file>
+      <file name="multer.js" path="D:\Projects\GossipChimp\components\posting\middleware\multer.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
       </file>
       <file name="validateGossip.js" path="D:\Projects\GossipChimp\components\posting\middleware\validateGossip.js">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
-        <line num="3" count="10" type="stmt"/>
-        <line num="4" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="3" count="11" type="stmt"/>
+        <line num="4" count="11" type="cond" truecount="2" falsecount="0"/>
         <line num="5" count="8" type="stmt"/>
         <line num="6" count="8" type="stmt"/>
-        <line num="8" count="2" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
       </file>
     </package>

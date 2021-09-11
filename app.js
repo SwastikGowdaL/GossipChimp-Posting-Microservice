@@ -9,10 +9,4 @@ app.use(cors());
 
 app.use(posting);
 
-app.get('/', (req, res) => {
-  res.status(200).send({
-    status: 'success',
-  });
-});
-
 module.exports = app;

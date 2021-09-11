@@ -1,5 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
+const path = require('path');
 const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
@@ -34,7 +35,7 @@ test('invalid gossip body', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'testing 5',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
     })
     .expect(400);
@@ -49,7 +50,7 @@ test('invalid gossip hashtags', async () => {
       hashtags: ['celebrity', 12345],
       author_id: 'author_id',
       author_name: 'testing 5',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
     })
     .expect(400);
@@ -64,7 +65,7 @@ test('invalid gossip author_id', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 12345,
       author_name: 'testing 5',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
     })
     .expect(400);
@@ -79,7 +80,7 @@ test('invalid gossip author_name', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 12345,
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
     })
     .expect(400);
@@ -122,7 +123,7 @@ test('invalid gossip author_pic_id', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 12345,
     })
     .expect(400);
@@ -137,14 +138,14 @@ test('invalid gossip link', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
       link: 12345,
     })
     .expect(400);
 });
 
-test('valid gossip data', async () => {
+test('valid gossip data without an image', async () => {
   const gossip = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
@@ -153,7 +154,7 @@ test('valid gossip data', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
       link: 'link',
     })
@@ -169,7 +170,7 @@ test('missing auth key', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
       link: 'link',
     })
@@ -190,7 +191,7 @@ test('invalid auth key', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
       link: 'link',
     })
@@ -207,10 +208,26 @@ test('valid auth key', async () => {
       hashtags: ['celebrity', 'cs'],
       author_id: 'author_id',
       author_name: 'author_name',
-      author_authorized: 1,
+      author_authorized: 'true',
       author_pic_id: 'author_pic_id',
       link: 'link',
     })
+    .expect(201);
+  expect(gossipData.body).toMatchObject(success);
+});
+
+test('valid gossip data along with an image', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach('post_img', path.resolve(__dirname, './image_for_testing.jpg'))
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'link')
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
 });

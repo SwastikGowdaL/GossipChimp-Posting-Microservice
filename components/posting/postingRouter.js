@@ -7,8 +7,6 @@ const upload = require('./middleware/multer');
 
 const router = new express.Router();
 
-router.get('/testing', postingController.testing);
-
 router.post(
   '/posting',
   auth,
