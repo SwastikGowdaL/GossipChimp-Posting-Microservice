@@ -16,8 +16,8 @@ const schema = {
       type: 'string',
     },
     author_authorized: {
-      type: 'number',
-      enum: [1, 0],
+      type: 'string',
+      enum: ['false', 'true'],
     },
     pic_id: {
       type: 'string',

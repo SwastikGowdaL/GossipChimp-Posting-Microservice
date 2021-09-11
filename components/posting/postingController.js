@@ -8,8 +8,16 @@ exports.testing = (req, res) => {
 
 exports.posting = async (req, res) => {
   try {
-    const gossipBody = JSON.parse(JSON.stringify(req.body));
-    await postingService.saveGossip(gossipBody);
+    const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
+    let gossipImg;
+    if (req.file) {
+      gossipImg = {
+        buffer: req.file.buffer,
+        originalName: req.file.originalname,
+        folder: 'GossipPics',
+      };
+    }
+    await postingService.saveGossip(gossipBody, gossipImg);
     res.status(201).send({
       status: 'success',
     });

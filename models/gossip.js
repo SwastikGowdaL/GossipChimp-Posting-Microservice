@@ -58,7 +58,7 @@ const gossipSchema = new mongoose.Schema({
   author_authorized: {
     type: Boolean,
   },
-  pic_id: {
+  post_img: {
     type: String,
   },
   link: {

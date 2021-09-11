@@ -46,6 +46,7 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.2",
     "express": "^4.17.1",
+    "imagekit": "^3.2.2",
     "install-peerdeps": "^3.0.3",
     "mongodb": "^4.1.1",
     "mongoose": "^6.0.5",
