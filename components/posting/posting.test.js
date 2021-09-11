@@ -220,7 +220,10 @@ test('valid gossip data along with an image', async () => {
   const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
-    .attach('post_img', path.resolve(__dirname, './image_for_testing.jpg'))
+    .attach(
+      'post_img',
+      path.resolve(__dirname, './testing_assets/image_for_testing.jpg')
+    )
     .field('gossip', 'hello there mate jest testing!')
     .field('hashtags', ['celebrity', 'cs'])
     .field('author_id', 'author_id')
@@ -230,4 +233,49 @@ test('valid gossip data along with an image', async () => {
     .field('link', 'link')
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
+});
+
+test('big image file upload', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach(
+      'post_img',
+      path.resolve(__dirname, './testing_assets/big_image.jpg')
+    )
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'link')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    error: 'File too large',
+  });
+});
+
+test('invalid image file upload', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach(
+      'post_img',
+      path.resolve(
+        __dirname,
+        './testing_assets/SwastikGowda_FullStackEngg._Resume.pdf'
+      )
+    )
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'link')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    error: 'Please provide a valid image file',
+  });
 });
