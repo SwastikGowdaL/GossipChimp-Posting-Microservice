@@ -12,7 +12,12 @@ router.post(
   auth,
   upload.single('post_img'),
   validateGossip(gossipSchema),
-  postingController.posting
+  postingController.posting,
+  (err, req, res, next) => {
+    res.status(400).send({
+      error: err.message,
+    });
+  }
 );
 
 module.exports = router;
