@@ -1,6 +1,7 @@
 const postingService = require('./postingService');
+const { ErrorHandler } = require('./postingErrors');
 
-const posting = async (req, res) => {
+const posting = async (req, res, next) => {
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
     let gossipImg;
@@ -16,7 +17,16 @@ const posting = async (req, res) => {
       status: 'success',
     });
   } catch (err) {
-    res.status(500).send(err);
+    if (err instanceof ErrorHandler) {
+      next(err);
+    }
+    const error = new ErrorHandler(
+      500,
+      err.message,
+      'error in postingController posting()',
+      false
+    );
+    next(error);
   }
 };
 

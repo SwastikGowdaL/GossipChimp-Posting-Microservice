@@ -1,6 +1,7 @@
 const ImageKit = require('imagekit');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
+const { ErrorHandler } = require('./postingErrors');
 
 const imagekit = new ImageKit({
   publicKey: config.IMAGE_KIT.publicKey,
@@ -10,8 +11,20 @@ const imagekit = new ImageKit({
 
 //* saves new gossip in the database
 exports.saveGossip = async (gossipBody) => {
-  const gossip = new Gossip(gossipBody);
-  await gossip.save();
+  try {
+    const gossip = new Gossip(gossipBody);
+    await gossip.save();
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL saveGossip()',
+      false
+    );
+  }
 };
 
 //* uploads the image to imageKit.io and returns the uploaded image url
