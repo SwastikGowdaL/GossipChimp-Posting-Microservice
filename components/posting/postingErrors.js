@@ -16,7 +16,6 @@ const handleError = async (err, res) => {
       message,
     });
   } else {
-    console.error('programmer error alert');
     return res.status(statusCode).send({
       status: 'error',
       message,

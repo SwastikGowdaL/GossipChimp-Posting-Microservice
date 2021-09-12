@@ -4,10 +4,9 @@ const path = require('path');
 const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
-const { Error } = require('./postingErrors');
 
 const authError = {
-  status: 'Error',
+  status: 'error',
   message: 'Unauthorized',
 };
 
@@ -252,7 +251,8 @@ test('big image file upload', async () => {
     .field('link', 'link')
     .expect(400);
   expect(gossipData.body).toMatchObject({
-    error: 'File too large',
+    status: 'error',
+    message: 'File too large',
   });
 });
 
@@ -276,6 +276,7 @@ test('invalid image file upload', async () => {
     .field('link', 'link')
     .expect(400);
   expect(gossipData.body).toMatchObject({
-    error: 'Please provide a valid image file',
+    status: 'error',
+    message: 'Please provide a valid image file',
   });
 });
