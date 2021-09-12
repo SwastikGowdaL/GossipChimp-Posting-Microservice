@@ -9,13 +9,13 @@ const imagekit = new ImageKit({
 });
 
 //* saves new gossip in the database
-const saveGossip = async (gossipBody) => {
+exports.saveGossip = async (gossipBody) => {
   const gossip = new Gossip(gossipBody);
   await gossip.save();
 };
 
 //* uploads the image to imageKit.io and returns the uploaded image url
-const saveImage = async (gossipImg) =>
+exports.saveImage = async (gossipImg) =>
   new Promise((resolve, reject) => {
     imagekit.upload(
       {
@@ -32,10 +32,3 @@ const saveImage = async (gossipImg) =>
       }
     );
   });
-
-const postingDAL = {
-  saveImage,
-  saveGossip,
-};
-
-module.exports = postingDAL;
