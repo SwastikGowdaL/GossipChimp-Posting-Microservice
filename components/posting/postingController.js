@@ -1,6 +1,6 @@
 const postingService = require('./postingService');
 
-exports.posting = async (req, res) => {
+const posting = async (req, res) => {
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
     let gossipImg;
@@ -19,3 +19,9 @@ exports.posting = async (req, res) => {
     res.status(500).send(err);
   }
 };
+
+const postingController = {
+  posting,
+};
+
+module.exports = postingController;
