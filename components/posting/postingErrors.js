@@ -9,19 +9,17 @@ class ErrorHandler extends Error {
 }
 
 const handleError = async (err, res) => {
-  const { statusCode, message, reason, isOperational } = err;
+  const { statusCode, message, isOperational } = err;
   if (isOperational) {
     res.status(statusCode).send({
       status: 'error',
       message,
-      reason,
     });
   } else {
     console.error('programmer error alert');
     return res.status(statusCode).send({
       status: 'error',
       message,
-      reason,
     });
   }
 };
