@@ -1,10 +1,8 @@
-const postingService = require('../postingService');
 const { ErrorHandler } = require('../postingErrors');
 
 const posting = async (req, res, next) => {
   try {
-    console.log('mock working');
-    throw new Error('testing mock error');
+    throw new Error('error in posting controller');
   } catch (err) {
     if (err instanceof ErrorHandler) {
       next(err);

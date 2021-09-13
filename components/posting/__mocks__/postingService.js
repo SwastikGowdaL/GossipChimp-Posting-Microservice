@@ -1,9 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 const postingDAL = require('./postingDAL');
-const { ErrorHandler } = require('./postingErrors');
+const { ErrorHandler } = require('../postingErrors');
 
+// eslint-disable-next-line no-unused-vars
 const saveImage = async (gossipImg) => {
   try {
-    return await postingDAL.saveImage(gossipImg);
+    throw new Error('error in posting service');
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -17,13 +19,10 @@ const saveImage = async (gossipImg) => {
   }
 };
 
+// eslint-disable-next-line no-unused-vars
 const saveGossip = async (gossipBody, gossipImg) => {
   try {
-    if (gossipImg) {
-      const imageUrl = await saveImage(gossipImg);
-      gossipBody.post_img = imageUrl;
-    }
-    await postingDAL.saveGossip(gossipBody);
+    throw new Error('error in posting service');
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
