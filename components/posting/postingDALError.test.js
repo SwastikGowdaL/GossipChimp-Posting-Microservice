@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const app = require('../../app');
 const config = require('../../config/config');
+const postingService = require('./postingService');
 
 jest.mock('./postingDAL.js');
 
@@ -10,6 +11,7 @@ beforeAll(async () => {
   if (config.ENV !== 'test') {
     throw new Error('ENV should be changed to test');
   }
+  await postingService.load_model();
 });
 
 afterAll(() => {

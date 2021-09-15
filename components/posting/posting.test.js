@@ -4,6 +4,7 @@ const path = require('path');
 const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
+const postingService = require('./postingService');
 
 const authError = {
   status: 'error',
@@ -18,6 +19,7 @@ beforeAll(async () => {
   if (config.ENV !== 'test') {
     throw new Error('ENV should be changed to test');
   }
+  await postingService.load_model();
   await Gossip.deleteMany();
 });
 
@@ -256,7 +258,7 @@ test('big image file upload', async () => {
   });
 });
 
-test('invalid image file upload', async () => {
+test('invalid image upload', async () => {
   const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
@@ -278,5 +280,24 @@ test('invalid image file upload', async () => {
   expect(gossipData.body).toMatchObject({
     status: 'error',
     message: 'Please provide a valid image file',
+  });
+});
+
+test('nsfw image upload', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.jpg'))
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'link')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    status: 'error',
+    message: 'Adult rated content not allowed!',
   });
 });
