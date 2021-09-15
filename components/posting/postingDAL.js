@@ -40,7 +40,7 @@ exports.saveImage = async (gossipImg) =>
         if (error) {
           reject(error);
         } else {
-          resolve(result.url);
+          resolve(result);
         }
       }
     );

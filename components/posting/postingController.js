@@ -10,6 +10,7 @@ const posting = async (req, res, next) => {
         buffer: req.file.buffer,
         originalName: req.file.originalname,
         folder: 'GossipPics',
+        mimeType: req.file.mimetype,
       };
     }
     await postingService.saveGossip(gossipBody, gossipImg);
