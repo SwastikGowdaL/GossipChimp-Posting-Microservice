@@ -301,3 +301,22 @@ test('nsfw image upload', async () => {
     message: 'Adult rated content not allowed!',
   });
 });
+
+test('valid gossip data along with profanity text', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach(
+      'post_img',
+      path.resolve(__dirname, './testing_assets/image_for_testing.jpg')
+    )
+    .field('gossip', 'what the hell ass !')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'link')
+    .expect(201);
+  expect(gossipData.body).toMatchObject(success);
+});
