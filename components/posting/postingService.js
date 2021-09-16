@@ -4,10 +4,11 @@ const nsfw = require('nsfwjs');
 const sharp = require('sharp');
 const { PNG } = require('pngjs');
 
-let _model;
-
 const postingDAL = require('./postingDAL');
 const { ErrorHandler } = require('./postingErrors');
+
+//* this variable is used to load the models needed for imageModeration
+let _model;
 
 // eslint-disable-next-line camelcase
 const load_model = async () => {
@@ -80,7 +81,7 @@ const imageModeration = async (image) => {
   return serenityCalculation(predictions);
 };
 
-//* moderates whether the image is safe, if it is, then sends the image to DAL layer for it to be saved in imagekit
+//* moderates whether the image is safe or not, if it is, then sends the image to DAL layer for it to be saved in imagekit
 const saveImage = async (gossipImg) => {
   try {
     const imageSerenity = await imageModeration(gossipImg);
