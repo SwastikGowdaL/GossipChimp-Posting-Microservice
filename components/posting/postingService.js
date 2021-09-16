@@ -3,6 +3,7 @@ const tf = require('@tensorflow/tfjs-node');
 const nsfw = require('nsfwjs');
 const sharp = require('sharp');
 const { PNG } = require('pngjs');
+const Filter = require('bad-words');
 
 const postingDAL = require('./postingDAL');
 const { ErrorHandler } = require('./postingErrors');
@@ -47,30 +48,31 @@ const convert = async (imgBuffer, imgType) => {
   return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
 };
 
-//* calculates and returns whether the imageSerenity is safe or unsafe based on the probability and serenityLevel
-const serenityCalculation = async (predictions) => {
+//* evaluates whether the predictions are safe or unsafe based on the probability and serenityLevel
+const predictionEvaluator = (prediction) => {
   const serenityLevel = 30;
   if (
-    predictions[0].className === 'Hentai' ||
-    predictions[0].className === 'Porn' ||
-    predictions[0].className === 'Sexy'
+    prediction.className === 'Hentai' ||
+    prediction.className === 'Porn' ||
+    prediction.className === 'Sexy'
   ) {
-    const convertedProbability = predictions[0].probability * 100;
+    const convertedProbability = prediction.probability * 100;
     if (convertedProbability > serenityLevel) {
       return 'unsafe';
     }
-  } else if (
-    predictions[1].className === 'Hentai' ||
-    predictions[1].className === 'Porn' ||
-    predictions[1].className === 'Sexy'
-  ) {
-    const convertedProbability = predictions[1].probability * 100;
-    if (convertedProbability > serenityLevel) {
-      return 'unsafe';
-    }
-  } else {
-    return 'safe';
   }
+  return 'safe';
+};
+
+//* calculates and returns whether the imageSerenity is safe or unsafe, by checking the first two arg of predictions
+const serenityCalculation = async (predictions) => {
+  if (
+    predictionEvaluator(predictions[0]) === 'unsafe' ||
+    predictionEvaluator(predictions[1]) === 'unsafe'
+  ) {
+    return 'unsafe';
+  }
+  return 'safe';
 };
 
 //* uses the nsfw module and returns the imageSerenity level
@@ -108,9 +110,19 @@ const saveImage = async (gossipImg) => {
   }
 };
 
+//* checks whether the provided text is profane or not, if it is then cleans it and returns the text, if not then returns as it is
+const badWordsFilter = async (text) => {
+  const filter = new Filter();
+  if (filter.isProfane(text)) {
+    return filter.clean(text);
+  }
+  return text;
+};
+
 //* saves the gossip & if image is there, then saves it as well
 const saveGossip = async (gossipBody, gossipImg) => {
   try {
+    gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
     if (gossipImg) {
       const imageUrl = await saveImage(gossipImg);
       gossipBody.post_img = imageUrl;
