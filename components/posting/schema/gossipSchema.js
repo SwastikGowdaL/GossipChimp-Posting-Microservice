@@ -24,6 +24,7 @@ const schema = {
     },
     link: {
       type: 'string',
+      format: 'url',
     },
     hashtags: {
       type: 'array',
