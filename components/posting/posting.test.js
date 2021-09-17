@@ -5,6 +5,7 @@ const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const postingService = require('./postingService');
+const postingDAL = require('./postingDAL');
 
 const authError = {
   status: 'error',
@@ -144,6 +145,20 @@ test('invalid gossip link', async () => {
       link: 12345,
     })
     .expect(400);
+
+  await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .send({
+      gossip: 'hello there mate',
+      hashtags: ['celebrity', 'cs'],
+      author_id: 'author_id',
+      author_name: 'author_name',
+      author_authorized: 'true',
+      author_pic_id: 'author_pic_id',
+      link: 'invalid link',
+    })
+    .expect(400);
 });
 
 test('valid gossip data without an image', async () => {
@@ -157,7 +172,7 @@ test('valid gossip data without an image', async () => {
       author_name: 'author_name',
       author_authorized: 'true',
       author_pic_id: 'author_pic_id',
-      link: 'link',
+      link: 'https://www.google.com',
     })
     .expect(201);
   expect(gossip.body).toMatchObject(success);
@@ -194,7 +209,7 @@ test('invalid auth key', async () => {
       author_name: 'author_name',
       author_authorized: 'true',
       author_pic_id: 'author_pic_id',
-      link: 'link',
+      link: 'https://www.google.com',
     })
     .expect(401);
   expect(gossip.body).toMatchObject(authError);
@@ -211,7 +226,7 @@ test('valid auth key', async () => {
       author_name: 'author_name',
       author_authorized: 'true',
       author_pic_id: 'author_pic_id',
-      link: 'link',
+      link: 'https://www.google.com',
     })
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
@@ -231,7 +246,7 @@ test('valid gossip data along with an image', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
 });
@@ -250,7 +265,7 @@ test('big image file upload', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
     .expect(400);
   expect(gossipData.body).toMatchObject({
     status: 'error',
@@ -275,7 +290,7 @@ test('invalid image upload', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
     .expect(400);
   expect(gossipData.body).toMatchObject({
     status: 'error',
@@ -284,7 +299,7 @@ test('invalid image upload', async () => {
 });
 
 test('nsfw image upload', async () => {
-  const gossipData = await request(app)
+  let gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
     .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.jpg'))
@@ -294,7 +309,58 @@ test('nsfw image upload', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    status: 'error',
+    message: 'Adult rated content not allowed!',
+  });
+
+  gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.png'))
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'https://www.google.com')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    status: 'error',
+    message: 'Adult rated content not allowed!',
+  });
+
+  gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.gif'))
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'https://www.google.com')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    status: 'error',
+    message: 'Adult rated content not allowed!',
+  });
+
+  gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.webp'))
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'https://www.google.com')
     .expect(400);
   expect(gossipData.body).toMatchObject({
     status: 'error',
@@ -316,7 +382,7 @@ test('valid gossip data along with profanity text', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
 });

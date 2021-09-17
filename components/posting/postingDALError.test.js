@@ -32,7 +32,7 @@ test('testing mock DAL', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'link')
+    .field('link', 'https://www.google.com')
     .expect(500);
   expect(gossipData.body).toMatchObject({
     status: 'error',
