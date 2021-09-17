@@ -1,10 +1,7 @@
-const jpeg = require('jpeg-js');
-const tf = require('@tensorflow/tfjs-node');
 const nsfw = require('nsfwjs');
-const sharp = require('sharp');
-const { PNG } = require('pngjs');
 const Filter = require('bad-words');
 
+const helpers = require('./helpers');
 const postingDAL = require('./postingDAL');
 const { ErrorHandler } = require('./postingErrors');
 
@@ -16,71 +13,12 @@ const load_model = async () => {
   _model = await nsfw.load();
 };
 
-//* Decoded image in UInt8 Byte array and if image in svg/gif/webp format converts it to jpg and then decodes it
-const imgDecode = async (imgBuffer, imgType) => {
-  let image;
-  if (imgType === 'image/jpg' || imgType === 'image/jpeg') {
-    image = await jpeg.decode(imgBuffer, true);
-  } else if (imgType === 'image/png') {
-    image = PNG.sync.read(imgBuffer);
-  } else if (
-    imgType === 'image/svg+xml' ||
-    imgType === 'image/gif' ||
-    imgType === 'image/webp'
-  ) {
-    const buffer = await sharp(imgBuffer).jpeg().toBuffer();
-    image = await jpeg.decode(buffer, true);
-  }
-  return image;
-};
-
-//* converting the image to the format that can be understood by the nsfw library
-const convert = async (imgBuffer, imgType) => {
-  const image = await imgDecode(imgBuffer, imgType);
-  const numChannels = 3;
-  const numPixels = image.width * image.height;
-  const values = new Int32Array(numPixels * numChannels);
-
-  for (let i = 0; i < numPixels; i++)
-    for (let c = 0; c < numChannels; ++c)
-      values[i * numChannels + c] = image.data[i * 4 + c];
-
-  return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
-};
-
-//* evaluates whether the predictions are safe or unsafe based on the probability and serenityLevel
-const predictionEvaluator = (prediction) => {
-  const serenityLevel = 30;
-  if (
-    prediction.className === 'Hentai' ||
-    prediction.className === 'Porn' ||
-    prediction.className === 'Sexy'
-  ) {
-    const convertedProbability = prediction.probability * 100;
-    if (convertedProbability > serenityLevel) {
-      return 'unsafe';
-    }
-  }
-  return 'safe';
-};
-
-//* calculates and returns whether the imageSerenity is safe or unsafe, by checking the first two arg of predictions
-const serenityCalculation = async (predictions) => {
-  if (
-    predictionEvaluator(predictions[0]) === 'unsafe' ||
-    predictionEvaluator(predictions[1]) === 'unsafe'
-  ) {
-    return 'unsafe';
-  }
-  return 'safe';
-};
-
 //* uses the nsfw module and returns the imageSerenity level
 const imageModeration = async (image) => {
-  const convertedImage = await convert(image.buffer, image.mimeType);
+  const convertedImage = await helpers.convert(image.buffer, image.mimeType);
   const predictions = await _model.classify(convertedImage);
   convertedImage.dispose();
-  return serenityCalculation(predictions);
+  return helpers.serenityCalculation(predictions);
 };
 
 //* moderates whether the image is safe or not, if it is, then sends the image to DAL layer for it to be saved in imagekit

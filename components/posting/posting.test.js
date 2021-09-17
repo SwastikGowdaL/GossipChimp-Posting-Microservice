@@ -5,7 +5,6 @@ const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const postingService = require('./postingService');
-const postingDAL = require('./postingDAL');
 
 const authError = {
   status: 'error',
