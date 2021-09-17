@@ -20,4 +20,7 @@ module.exports = {
     privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
     urlEndpoint: process.env.IMAGE_KIT_URL_ENDPOINT,
   },
+
+  //* api key for Malicious URL Scanner
+  maliciousUrlScannerKey: process.env.MALICIOUS_URL_SCANNER_KEY,
 };

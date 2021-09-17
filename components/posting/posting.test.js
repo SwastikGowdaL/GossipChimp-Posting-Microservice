@@ -297,8 +297,8 @@ test('invalid image upload', async () => {
   });
 });
 
-test('nsfw image upload', async () => {
-  let gossipData = await request(app)
+test('nsfw jpg image upload', async () => {
+  const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
     .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.jpg'))
@@ -314,8 +314,10 @@ test('nsfw image upload', async () => {
     status: 'error',
     message: 'Adult rated content not allowed!',
   });
+});
 
-  gossipData = await request(app)
+test('nsfw png image upload', async () => {
+  const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
     .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.png'))
@@ -331,11 +333,13 @@ test('nsfw image upload', async () => {
     status: 'error',
     message: 'Adult rated content not allowed!',
   });
+});
 
-  gossipData = await request(app)
+test('nsfw webp image upload', async () => {
+  const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
-    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.gif'))
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.webp'))
     .field('gossip', 'hello there mate jest testing!')
     .field('hashtags', ['celebrity', 'cs'])
     .field('author_id', 'author_id')
@@ -348,11 +352,13 @@ test('nsfw image upload', async () => {
     status: 'error',
     message: 'Adult rated content not allowed!',
   });
+});
 
-  gossipData = await request(app)
+test('nsfw gif image upload', async () => {
+  const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
-    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.webp'))
+    .attach('post_img', path.resolve(__dirname, './testing_assets/nsfw.gif'))
     .field('gossip', 'hello there mate jest testing!')
     .field('hashtags', ['celebrity', 'cs'])
     .field('author_id', 'author_id')
