@@ -391,3 +391,25 @@ test('valid gossip data along with profanity text', async () => {
     .expect(201);
   expect(gossipData.body).toMatchObject(success);
 });
+
+test('malicious link detection', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .attach(
+      'post_img',
+      path.resolve(__dirname, './testing_assets/image_for_testing.jpg')
+    )
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'https://www.milestonecontainers.com')
+    .expect(400);
+  expect(gossipData.body).toMatchObject({
+    status: 'error',
+    message: 'malicious link detected',
+  });
+});

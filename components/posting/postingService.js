@@ -93,12 +93,15 @@ const badWordsFilter = async (text) => {
   return text;
 };
 
-//* saves the gossip & if image is there, then saves it as well
+//* saves the gossip & if image and link are there, then saves them as well
 const saveGossip = async (gossipBody, gossipImg) => {
   try {
+    //* storing sanitized text in gossipBody.gossip
     gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
 
+    //* checking whether the user provided a link
     if (gossipBody.link) {
+      //* contains true if link is malicious else contains false
       const isMalicious = await maliciousUrlDetection(gossipBody.link);
       if (isMalicious) {
         throw new ErrorHandler(
@@ -110,6 +113,7 @@ const saveGossip = async (gossipBody, gossipImg) => {
       }
     }
 
+    //* checking whether the user provided an image
     if (gossipImg) {
       const imageUrl = await saveImage(gossipImg);
       gossipBody.post_img = imageUrl;
