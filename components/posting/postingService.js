@@ -133,10 +133,40 @@ const saveGossip = async (gossipBody, gossipImg) => {
   }
 };
 
+//* deletes the gossip only after checking whether the provided authorID matches the actual gossip authorID
+const deleteGossip = async (gossipID, authorID) => {
+  try {
+    const gossip = await postingDAL.gossip(gossipID);
+
+    //* checks whether the provided authorID doesn't match the actual gossip authorID
+    if (gossip.author_id !== authorID) {
+      throw new ErrorHandler(
+        500,
+        'author of the gossip to be deleted not matching',
+        'error in postingService deleteGossip()',
+        false
+      );
+    }
+
+    return await postingDAL.deleteGossip(gossipID);
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingService deleteGossip()',
+      false
+    );
+  }
+};
+
 const postingService = {
   saveImage,
   saveGossip,
   load_model,
+  deleteGossip,
 };
 
 module.exports = postingService;

@@ -1,10 +1,10 @@
 const { ErrorHandler } = require('../postingErrors');
 
-function validateGossip(gossipSchema) {
+function validateSchema(Schema) {
   return (req, res, next) => {
-    const valid = gossipSchema(req.body);
+    const valid = Schema(req.body);
     if (!valid) {
-      const { errors } = gossipSchema;
+      const { errors } = Schema;
       const err = new ErrorHandler(
         400,
         errors,
@@ -17,4 +17,4 @@ function validateGossip(gossipSchema) {
   };
 }
 
-module.exports = validateGossip;
+module.exports = validateSchema;

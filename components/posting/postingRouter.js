@@ -1,7 +1,8 @@
 const express = require('express');
 const postingController = require('./postingController');
-const validateGossip = require('./middleware/validateGossip');
+const validateSchema = require('./middleware/validateGossip');
 const gossipSchema = require('./schema/gossipSchema');
+const deleteGossipSchema = require('./schema/deleteGossipSchema');
 const auth = require('./middleware/auth');
 const upload = require('./middleware/multer');
 const { errorHandlingMiddleware } = require('./postingErrors');
@@ -12,8 +13,15 @@ router.post(
   '/posting',
   auth,
   upload.single('post_img'),
-  validateGossip(gossipSchema),
+  validateSchema(gossipSchema),
   postingController.posting
+);
+
+router.delete(
+  '/post',
+  auth,
+  validateSchema(deleteGossipSchema),
+  postingController.deleteGossip
 );
 
 router.use(errorHandlingMiddleware);

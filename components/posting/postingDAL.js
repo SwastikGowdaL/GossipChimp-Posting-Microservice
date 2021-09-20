@@ -27,7 +27,7 @@ exports.saveGossip = async (gossipBody) => {
   }
 };
 
-//* uploads the image to imageKit.io and returns the uploaded image url
+//* uploads the image to imageKit.io and returns the uploaded image details
 exports.saveImage = async (gossipImg) =>
   new Promise((resolve, reject) => {
     imagekit.upload(
@@ -45,3 +45,56 @@ exports.saveImage = async (gossipImg) =>
       }
     );
   });
+
+//* deletes the gossip
+exports.deleteGossip = async (gossipID) => {
+  try {
+    const gossip = await Gossip.findByIdAndDelete(gossipID);
+    if (!gossip) {
+      throw new ErrorHandler(
+        404,
+        'gossip not found for it to be deleted',
+        'error in postingDAL deleteGossip()',
+        false
+      );
+    }
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL deleteGossip()',
+      false
+    );
+  }
+};
+
+//* finds the gossip for the specified gossipID
+exports.gossip = async (gossipID) => {
+  try {
+    const gossip = await Gossip.findById(gossipID);
+
+    //* checks whether the gossip was found or not
+    if (!gossip) {
+      throw new ErrorHandler(
+        404,
+        'gossip not found',
+        'error in postingDAL deleteGossip()',
+        true
+      );
+    }
+    return gossip;
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL gossip()',
+      false
+    );
+  }
+};

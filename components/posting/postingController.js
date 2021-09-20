@@ -1,6 +1,7 @@
 const postingService = require('./postingService');
 const { ErrorHandler } = require('./postingErrors');
 
+//* saves the gossip
 const posting = async (req, res, next) => {
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
@@ -31,8 +32,30 @@ const posting = async (req, res, next) => {
   }
 };
 
+//* deletes the gossip
+const deleteGossip = async (req, res, next) => {
+  try {
+    const gossipID = req.body.gossip_id;
+    const authorID = req.body.author_id;
+    await postingService.deleteGossip(gossipID, authorID);
+    res.status(200).send({ status: 'success', message: 'post deleted' });
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      next(err);
+    }
+    const error = new ErrorHandler(
+      500,
+      err.message,
+      'error in postingController deletePost()',
+      false
+    );
+    next(error);
+  }
+};
+
 const postingController = {
   posting,
+  deleteGossip,
 };
 
 module.exports = postingController;
