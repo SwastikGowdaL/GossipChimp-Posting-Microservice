@@ -5,6 +5,9 @@ const app = require('../../app');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const postingService = require('./postingService');
+const postingDAL = require('./postingDAL');
+
+let savedGossip;
 
 const authError = {
   status: 'error',
@@ -21,6 +24,18 @@ beforeAll(async () => {
   }
   await postingService.load_model();
   await Gossip.deleteMany();
+
+  const gossipBody = {
+    author_id: '12345',
+    author_name: 'swastik',
+    gossip: 'saving in jest',
+    author_authorized: 'true',
+    author_pic_id: 'author_pic_id',
+    hashtags: ['cs', 'coding'],
+  };
+
+  const gossip = new Gossip(gossipBody);
+  savedGossip = await gossip.save();
 });
 
 afterAll(() => {
@@ -392,24 +407,59 @@ test('valid gossip data along with profanity text', async () => {
   expect(gossipData.body).toMatchObject(success);
 });
 
-test('malicious link detection', async () => {
+test('malicious link ', async () => {
   const gossipData = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
-    .attach(
-      'post_img',
-      path.resolve(__dirname, './testing_assets/image_for_testing.jpg')
-    )
     .field('gossip', 'hello there mate jest testing!')
     .field('hashtags', ['celebrity', 'cs'])
     .field('author_id', 'author_id')
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'https://www.milestonecontainers.com')
+    .field('link', 'https://www.enquirepandemiccovid.com')
     .expect(400);
   expect(gossipData.body).toMatchObject({
     status: 'error',
     message: 'malicious link detected',
+  });
+}, 10000);
+
+test('non-malicious link ', async () => {
+  const gossipData = await request(app)
+    .post('/posting')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .field('gossip', 'hello there mate jest testing!')
+    .field('hashtags', ['celebrity', 'cs'])
+    .field('author_id', 'author_id')
+    .field('author_name', 'author_name')
+    .field('author_authorized', 'true')
+    .field('author_pic_id', 'author_pic_id')
+    .field('link', 'https://www.google.com')
+    .expect(201);
+  expect(gossipData.body).toMatchObject({
+    status: 'success',
+  });
+});
+
+test('finding the specified gossip using postingDAL gossip()', async () => {
+  const gossip = await postingDAL.gossip(savedGossip._id);
+  const savedGossipID = String(savedGossip._id);
+  const gossipID = String(gossip._id);
+  expect(gossipID).toEqual(savedGossipID);
+});
+
+test('deleting gossip', async () => {
+  const gossip = await request(app)
+    .delete('/post')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .send({
+      author_id: savedGossip.author_id,
+      gossip_id: savedGossip._id,
+    })
+    .expect(200);
+  expect(gossip.body).toMatchObject({
+    status: 'success',
+    message: 'post deleted',
   });
 });
