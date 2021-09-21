@@ -98,3 +98,15 @@ exports.gossip = async (gossipID) => {
     );
   }
 };
+
+exports.deleteImage = async (imageID) =>
+  new Promise((resolve, reject) => {
+    imagekit.deleteFile(imageID, function (error, result) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });

@@ -59,7 +59,12 @@ const gossipSchema = new mongoose.Schema({
     type: Boolean,
   },
   post_img: {
-    type: String,
+    fileId: {
+      type: String,
+    },
+    url: {
+      type: String,
+    },
   },
   link: {
     type: String,

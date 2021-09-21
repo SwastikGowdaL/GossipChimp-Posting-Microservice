@@ -48,7 +48,10 @@ const saveImage = async (gossipImg) => {
       );
     }
     const imageData = await postingDAL.saveImage(gossipImg);
-    return imageData.url;
+    return {
+      fileId: imageData.fileId,
+      url: imageData.url,
+    };
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -115,8 +118,8 @@ const saveGossip = async (gossipBody, gossipImg) => {
 
     //* checking whether the user provided an image
     if (gossipImg) {
-      const imageUrl = await saveImage(gossipImg);
-      gossipBody.post_img = imageUrl;
+      const imageData = await saveImage(gossipImg);
+      gossipBody.post_img = imageData;
     }
 
     await postingDAL.saveGossip(gossipBody);
@@ -162,11 +165,28 @@ const deleteGossip = async (gossipID, authorID) => {
   }
 };
 
+const deleteImage = async (imageID) => {
+  try {
+    return await postingDAL.deleteImage(imageID);
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingService deleteImage()',
+      false
+    );
+  }
+};
+
 const postingService = {
   saveImage,
   saveGossip,
   load_model,
   deleteGossip,
+  deleteImage,
 };
 
 module.exports = postingService;

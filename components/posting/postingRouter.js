@@ -24,6 +24,8 @@ router.delete(
   postingController.deleteGossip
 );
 
+router.delete('/image', auth, postingController.deleteImage);
+
 router.use(errorHandlingMiddleware);
 
 // eslint-disable-next-line no-unused-vars

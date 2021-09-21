@@ -53,9 +53,32 @@ const deleteGossip = async (req, res, next) => {
   }
 };
 
+const deleteImage = async (req, res, next) => {
+  try {
+    const imageID = req.body.image_id;
+    await postingService.deleteImage(imageID);
+    res.status(200).send({
+      status: 'success',
+      message: 'image deleted',
+    });
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      next(err);
+    }
+    const error = new ErrorHandler(
+      500,
+      err.message,
+      'error in postingController deleteImage()',
+      false
+    );
+    next(error);
+  }
+};
+
 const postingController = {
   posting,
   deleteGossip,
+  deleteImage,
 };
 
 module.exports = postingController;

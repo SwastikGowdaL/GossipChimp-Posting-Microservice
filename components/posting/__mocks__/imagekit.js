@@ -26,6 +26,26 @@ class ImageKit {
     };
     cb(err, undefined);
   }
+
+  deleteFile(imageID, cb) {
+    if (
+      this.publicKey === config.IMAGE_KIT.publicKey &&
+      this.privateKey === config.IMAGE_KIT.privateKey &&
+      this.urlEndpoint === config.IMAGE_KIT.urlEndpoint
+    ) {
+      const result = {
+        fileId: 'fileId',
+        url: 'url',
+      };
+      cb(undefined, result);
+    }
+
+    const err = {
+      status: 'Error',
+      message: 'Invalid credentials',
+    };
+    cb(err, undefined);
+  }
 }
 
 module.exports = ImageKit;
