@@ -16,15 +16,16 @@ class ImageKit {
     ) {
       const result = {
         url: 'url',
+        fileId: 'fileId',
       };
-      cb(undefined, result);
+      return cb(undefined, result);
     }
 
     const err = {
       status: 'Error',
       message: 'Invalid credentials',
     };
-    cb(err, undefined);
+    return cb(err, undefined);
   }
 
   deleteFile(imageID, cb) {
@@ -33,18 +34,14 @@ class ImageKit {
       this.privateKey === config.IMAGE_KIT.privateKey &&
       this.urlEndpoint === config.IMAGE_KIT.urlEndpoint
     ) {
-      const result = {
-        fileId: 'fileId',
-        url: 'url',
-      };
-      cb(undefined, result);
+      return cb(undefined, 'done');
     }
 
     const err = {
       status: 'Error',
       message: 'Invalid credentials',
     };
-    cb(err, undefined);
+    return cb(err, undefined);
   }
 }
 

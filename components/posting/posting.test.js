@@ -175,7 +175,7 @@ test('invalid gossip link', async () => {
     .expect(400);
 });
 
-test('valid gossip data without an image', async () => {
+test('valid gossip data without an image & link', async () => {
   const gossip = await request(app)
     .post('/posting')
     .set('AUTH_KEY', config.AUTH_KEY)
@@ -186,7 +186,6 @@ test('valid gossip data without an image', async () => {
       author_name: 'author_name',
       author_authorized: 'true',
       author_pic_id: 'author_pic_id',
-      link: 'https://www.google.com',
     })
     .expect(201);
   expect(gossip.body).toMatchObject(success);
@@ -423,7 +422,7 @@ test('malicious link ', async () => {
     status: 'error',
     message: 'malicious link detected',
   });
-}, 10000);
+}, 20000);
 
 test('non-malicious link ', async () => {
   const gossipData = await request(app)
@@ -461,5 +460,19 @@ test('deleting gossip', async () => {
   expect(gossip.body).toMatchObject({
     status: 'success',
     message: 'post deleted',
+  });
+});
+
+test('deleting image', async () => {
+  const gossip = await request(app)
+    .delete('/image')
+    .set('AUTH_KEY', config.AUTH_KEY)
+    .send({
+      image_id: 'testing',
+    })
+    .expect(200);
+  expect(gossip.body).toMatchObject({
+    status: 'success',
+    message: 'image deleted',
   });
 });

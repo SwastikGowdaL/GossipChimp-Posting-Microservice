@@ -38,6 +38,7 @@ exports.saveImage = async (gossipImg) =>
       },
       function (error, result) {
         if (error) {
+          console.log(error);
           reject(error);
         } else {
           resolve(result);
@@ -101,12 +102,12 @@ exports.gossip = async (gossipID) => {
 
 exports.deleteImage = async (imageID) =>
   new Promise((resolve, reject) => {
-    imagekit.deleteFile(imageID, function (error, result) {
-      if (error) {
-        console.log(error);
-        reject(error);
+    imagekit.deleteFile(imageID, function (error1, result1) {
+      if (error1) {
+        console.log(error1);
+        reject(error1);
       } else {
-        resolve(result);
+        resolve(result1);
       }
     });
   });
