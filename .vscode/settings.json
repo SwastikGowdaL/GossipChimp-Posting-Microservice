@@ -1,6 +1,6 @@
 {
   "git.ignoreLimitWarning": true,
-  "cSpell.words": ["imagekit"],
+  "cSpell.words": ["apikey", "imagekit"],
   "cSpell.ignoreWords": [
     "SwastikGowda_FullStackEngg",
     "camelcase",

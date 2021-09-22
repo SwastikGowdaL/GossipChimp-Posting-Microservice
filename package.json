@@ -49,6 +49,7 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.2",
     "express": "^4.17.1",
+    "form-data": "^4.0.0",
     "imagekit": "^3.2.2",
     "install-peerdeps": "^3.0.3",
     "jpeg-js": "^0.4.3",

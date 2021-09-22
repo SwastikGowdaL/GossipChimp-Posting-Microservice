@@ -23,4 +23,5 @@ module.exports = {
 
   //* api key for Malicious URL Scanner
   maliciousUrlScannerKey: process.env.MALICIOUS_URL_SCANNER_KEY,
+  virusTotalApiKey: process.env.VIURSTOTAL_APIKEY,
 };
