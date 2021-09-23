@@ -416,7 +416,7 @@ test('malicious link ', async () => {
     .field('author_name', 'author_name')
     .field('author_authorized', 'true')
     .field('author_pic_id', 'author_pic_id')
-    .field('link', 'https://www.enquirepandemiccovid.com')
+    .field('link', 'https://www.lightmultiloans.com')
     .expect(400);
   expect(gossipData.body).toMatchObject({
     status: 'error',
