@@ -13,7 +13,7 @@ const imagekit = new ImageKit({
 exports.saveGossip = async (gossipBody) => {
   try {
     const gossip = new Gossip(gossipBody);
-    await gossip.save();
+    return await gossip.save();
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -59,6 +59,7 @@ exports.deleteGossip = async (gossipID) => {
         false
       );
     }
+    return gossip;
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;

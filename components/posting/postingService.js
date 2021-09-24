@@ -6,6 +6,7 @@ const helpers = require('./helpers');
 const postingDAL = require('./postingDAL');
 const { ErrorHandler } = require('./postingErrors');
 const config = require('../../config/config');
+const publishers = require('./publishers');
 
 //* this variable is used to load the models needed for imageModeration
 let _model;
@@ -103,18 +104,25 @@ const saveGossip = async (gossipBody, gossipImg) => {
     gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
 
     //* checking whether the user provided a link
-    if (gossipBody.link) {
-      //* contains true if link is malicious else contains false
-      const isMalicious = await maliciousUrlDetection(gossipBody.link);
-      if (isMalicious) {
-        throw new ErrorHandler(
-          400,
-          'malicious link detected',
-          'error in postingService saveGossip()',
-          true
-        );
-      }
-    }
+    // if (gossipBody.link) {
+    //   await publishers.maliciousUrlDetection({
+    //     url: gossipBody.link,
+    //   });
+    //* contains true if link is malicious else contains false
+    // const isMalicious = await maliciousUrlDetection(gossipBody.link);
+    // if (isMalicious) {
+    //   throw new ErrorHandler(
+    //     400,
+    //     'malicious link detected',
+    //     'error in postingService saveGossip()',
+    //     true
+    //   );
+    // }
+
+    //   await publishers.maliciousUrlDetection({
+    //     url: gossipBody.link,
+    //   });
+    // }
 
     //* checking whether the user provided an image
     if (gossipImg) {
@@ -122,7 +130,15 @@ const saveGossip = async (gossipBody, gossipImg) => {
       gossipBody.post_img = imageData;
     }
 
-    await postingDAL.saveGossip(gossipBody);
+    const savedGossip = await postingDAL.saveGossip(gossipBody);
+
+    //* checking whether the user provided a link
+    if (gossipBody.link) {
+      await publishers.maliciousUrlDetection({
+        url: gossipBody.link,
+        gossip_id: savedGossip._id,
+      });
+    }
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
