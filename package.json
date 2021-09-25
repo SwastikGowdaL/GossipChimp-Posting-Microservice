@@ -10,8 +10,13 @@
     "lint:fix": "eslint . --fix",
     "test": "jest",
     "testCoverage": "jest --coverage",
-    "consume":"nodemon ./components/posting/consumers/maliciousUrlDetection.js",
-    "all":"npm-run-all --parallel dev consume"
+    "consumer":"nodemon ./components/posting/consumers/maliciousUrlDetection.js",
+    "consumer1":"nodemon ./components/posting/consumers/deleteGossip.js",
+    "publisher": "nodemon ./components/posting/publishers/maliciousUrlDetection.js",
+    "publisher1": "nodemon ./components/posting/publishers/deleteGossip.js",
+    "connectPub":"nodemon ./components/posting/publishers/index.js",
+    "connectCon":"nodemon ./components/posting/consumers/index.js",
+    "all":"npm-run-all --parallel dev connectPub connectCon"
   },
   "jest": {
     "testEnvironment": "node"
