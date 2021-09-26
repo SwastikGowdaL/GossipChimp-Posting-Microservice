@@ -1,12 +1,14 @@
 {
   "git.ignoreLimitWarning": true,
-  "cSpell.words": ["apikey", "imagekit"],
+  "cSpell.words": ["apikey", "cloudinary", "imagekit"],
   "cSpell.ignoreWords": [
     "SwastikGowda_FullStackEngg",
     "amqps",
     "camelcase",
+    "derx4vp3v",
     "dijiydvz",
     "jFcwNEjYVUsaUj2DVh7EZCKDv6kkBPbd",
-    "public_9JjmnGTnjSpq4Vqo5PoB0HVH0eo"
+    "public_9JjmnGTnjSpq4Vqo5PoB0HVH0eo",
+    "srh1RqDVC_Oliq6TUIGVOJz4fNE"
   ]
 }

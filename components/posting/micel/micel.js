@@ -52,3 +52,25 @@
 //     );
 //   }
 // };
+
+//* checks whether the provided link is malicious or not
+// const maliciousUrlDetection = async (link) => {
+//     try {
+//       const URL = 'https://ipqualityscore.com/api/json/url/';
+//       const formatedLink = helpers.formatLink(link);
+//       const response = await axios.get(
+//         `${URL}${config.maliciousUrlScannerKey}/${formatedLink}`
+//       );
+//       return response.data.unsafe;
+//     } catch (err) {
+//       if (err instanceof ErrorHandler) {
+//         throw err;
+//       }
+//       throw new ErrorHandler(
+//         500,
+//         err.message,
+//         'error in postingService maliciousUrlDetection()',
+//         false
+//       );
+//     }
+//   };

@@ -65,6 +65,9 @@ const gossipSchema = new mongoose.Schema({
     url: {
       type: String,
     },
+    service: {
+      type: String,
+    },
   },
   link: {
     type: String,

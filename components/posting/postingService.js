@@ -7,6 +7,7 @@ const postingDAL = require('./postingDAL');
 const { ErrorHandler } = require('./postingErrors');
 const config = require('../../config/config');
 const publishers = require('./publishers');
+const proxies = require('./proxies');
 
 //* this variable is used to load the models needed for imageModeration
 let _model;
@@ -48,11 +49,12 @@ const saveImage = async (gossipImg) => {
         true
       );
     }
-    const imageData = await postingDAL.saveImage(gossipImg);
-    return {
-      fileId: imageData.fileId,
-      url: imageData.url,
-    };
+    // const imageData = await postingDAL.saveImage(gossipImg);
+    // return {
+    //   fileId: imageData.fileId,
+    //   url: imageData.url,
+    // };
+    return await proxies.saveImage(gossipImg);
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -61,28 +63,6 @@ const saveImage = async (gossipImg) => {
       500,
       err.message,
       'error in postingService saveImage()',
-      false
-    );
-  }
-};
-
-//* checks whether the provided link is malicious or not
-const maliciousUrlDetection = async (link) => {
-  try {
-    const URL = 'https://ipqualityscore.com/api/json/url/';
-    const formatedLink = helpers.formatLink(link);
-    const response = await axios.get(
-      `${URL}${config.maliciousUrlScannerKey}/${formatedLink}`
-    );
-    return response.data.unsafe;
-  } catch (err) {
-    if (err instanceof ErrorHandler) {
-      throw err;
-    }
-    throw new ErrorHandler(
-      500,
-      err.message,
-      'error in postingService maliciousUrlDetection()',
       false
     );
   }
@@ -102,27 +82,6 @@ const saveGossip = async (gossipBody, gossipImg) => {
   try {
     //* storing sanitized text in gossipBody.gossip
     gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
-
-    //* checking whether the user provided a link
-    // if (gossipBody.link) {
-    //   await publishers.maliciousUrlDetection({
-    //     url: gossipBody.link,
-    //   });
-    //* contains true if link is malicious else contains false
-    // const isMalicious = await maliciousUrlDetection(gossipBody.link);
-    // if (isMalicious) {
-    //   throw new ErrorHandler(
-    //     400,
-    //     'malicious link detected',
-    //     'error in postingService saveGossip()',
-    //     true
-    //   );
-    // }
-
-    //   await publishers.maliciousUrlDetection({
-    //     url: gossipBody.link,
-    //   });
-    // }
 
     //* checking whether the user provided an image
     if (gossipImg) {
