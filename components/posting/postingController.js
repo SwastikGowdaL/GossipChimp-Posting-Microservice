@@ -53,6 +53,7 @@ const deleteGossip = async (req, res, next) => {
   }
 };
 
+//! this is not going to work since it requires the whole post_img details for it to delete an image
 const deleteImage = async (req, res, next) => {
   try {
     const imageID = req.body.image_id;

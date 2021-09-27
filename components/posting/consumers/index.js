@@ -1,10 +1,10 @@
 const amqp = require('amqplib');
 const axios = require('axios');
 const config = require('../../../config/config');
-const postingDAL = require('../postingDAL');
 const publishers = require('../publishers');
 require('../../../db/mongoose');
 const helpers = require('../helpers');
+const postingService = require('../postingService');
 
 let connection;
 let channel;
@@ -19,7 +19,7 @@ const connect = async () => {
   await channel.assertQueue('deleteGossip');
 };
 
-//* consumes the messages from the maliciousUrlDetection queue
+//* consumes the messages from the maliciousUrlDetection queue and checks whether the provided link is malicious or not
 const maliciousUrlDetection = async () => {
   channel.consume('maliciousUrlDetection', async (message) => {
     const msg = JSON.parse(message.content.toString());
@@ -32,7 +32,10 @@ const maliciousUrlDetection = async () => {
         );
         if (response.data.unsafe) {
           console.log('unsafe');
-          await publishers.deleteGossip(msg.gossip_id);
+          await publishers.deleteGossip({
+            gossip_id: msg.gossip_id,
+            author_id: msg.author_id,
+          });
           channel.ack(message);
         } else {
           console.log('safe');
@@ -45,14 +48,25 @@ const maliciousUrlDetection = async () => {
   });
 };
 
-//* consumes the messages from the deleteGossip queue
+//* consumes the messages from the deleteGossip queue and deletes the gossip
 const deleteGossip = async () => {
   channel.consume('deleteGossip', async (message) => {
-    const msg = message.content.toString();
+    const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
-        const deletedGossip = await postingDAL.deleteGossip(msg);
+        //* deletes the gossip by communicating with the deleteGossip service
+        const deletedGossip = await postingService.deleteGossip(
+          msg.gossip_id,
+          msg.author_id
+        );
         console.log(deletedGossip);
+
+        //* deletes the image if there was any image stored
+        if (deletedGossip.post_img) {
+          await postingService.deleteImage(deletedGossip.post_img);
+          console.log('image deleted');
+        }
+
         channel.ack(message);
       } catch (err) {
         console.log(err);

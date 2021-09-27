@@ -37,7 +37,7 @@ const imageModeration = async (image) => {
   }
 };
 
-//* moderates whether the image is safe or not, if it is, then sends the image to DAL layer for it to be saved in imagekit
+//* moderates whether the image is safe or not, if it is, then sends the image to Proxy saveImage for it to be saved in imagekit
 const saveImage = async (gossipImg) => {
   try {
     const imageSerenity = await imageModeration(gossipImg);
@@ -49,11 +49,6 @@ const saveImage = async (gossipImg) => {
         true
       );
     }
-    // const imageData = await postingDAL.saveImage(gossipImg);
-    // return {
-    //   fileId: imageData.fileId,
-    //   url: imageData.url,
-    // };
     return await proxies.saveImage(gossipImg);
   } catch (err) {
     if (err instanceof ErrorHandler) {
@@ -94,8 +89,9 @@ const saveGossip = async (gossipBody, gossipImg) => {
     //* checking whether the user provided a link
     if (gossipBody.link) {
       await publishers.maliciousUrlDetection({
-        url: gossipBody.link,
+        url: savedGossip.link,
         gossip_id: savedGossip._id,
+        author_id: savedGossip.author_id,
       });
     }
   } catch (err) {
@@ -140,9 +136,13 @@ const deleteGossip = async (gossipID, authorID) => {
   }
 };
 
-const deleteImage = async (imageID) => {
+//* deletes an image by checking whether it is stored in imageKit or cloudinary then by communicating with the DAL layer
+const deleteImage = async (imageDetails) => {
   try {
-    return await postingDAL.deleteImage(imageID);
+    if (imageDetails.service === 'imageKit') {
+      return await postingDAL.deleteImage(imageDetails.fileId);
+    }
+    return await postingDAL.deleteBackupImage(imageDetails.fileId);
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;

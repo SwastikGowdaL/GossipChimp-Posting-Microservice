@@ -1,4 +1,6 @@
 const ImageKit = require('imagekit');
+const cloudinary = require('cloudinary');
+
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const { ErrorHandler } = require('./postingErrors');
@@ -7,6 +9,12 @@ const imagekit = new ImageKit({
   publicKey: config.IMAGE_KIT.publicKey,
   privateKey: config.IMAGE_KIT.privateKey,
   urlEndpoint: config.IMAGE_KIT.urlEndpoint,
+});
+
+cloudinary.config({
+  cloud_name: config.cloudinary_cloud_name,
+  api_key: config.cloudinary_api_key,
+  api_secret: config.cloudinary_api_secret,
 });
 
 //* saves new gossip in the database
@@ -101,6 +109,7 @@ exports.gossip = async (gossipID) => {
   }
 };
 
+//* deletes the image from the imagekit
 exports.deleteImage = async (imageID) =>
   new Promise((resolve, reject) => {
     imagekit.deleteFile(imageID, function (error1, result1) {
@@ -111,4 +120,13 @@ exports.deleteImage = async (imageID) =>
         resolve(result1);
       }
     });
+  });
+
+//* deletes the image from cloudinary
+exports.deleteBackupImage = async (publicID) =>
+  cloudinary.v2.uploader.destroy(publicID, {}, function (error, result) {
+    if (error) {
+      console.log(error);
+    }
+    return result;
   });

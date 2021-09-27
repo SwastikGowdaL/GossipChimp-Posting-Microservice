@@ -30,10 +30,10 @@ const maliciousUrlDetection = async (message) => {
 };
 
 //* receives the gossipID and enqueues that in the deleteGossip queue
-const deleteGossip = async (gossipID) => {
+const deleteGossip = async (message) => {
   try {
-    channel.sendToQueue('deleteGossip', Buffer.from(gossipID));
-    console.log(`enqueued message ${gossipID} to deleteGossip queue`);
+    channel.sendToQueue('deleteGossip', Buffer.from(JSON.stringify(message)));
+    console.log(`enqueued message ${message.gossip_id} to deleteGossip queue`);
   } catch (err) {
     console.error(err);
   }

@@ -1,11 +1,9 @@
 const cloudinary = require('cloudinary');
 const streamifier = require('streamifier');
-const ShortUniqueId = require('short-unique-id');
 
 const config = require('../../../config/config');
 const postingDAL = require('../postingDAL');
-
-const uid = new ShortUniqueId({ length: 10 });
+const helpers = require('../helpers');
 
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name,
@@ -13,10 +11,10 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
+//* storing image in cloudinary
 const uploadFromBuffer = async (gossipImg) =>
   new Promise((resolve, reject) => {
-    const splitName = gossipImg.originalName.split('.');
-    const uniqueImageName = `${splitName[0]}_${uid()}`;
+    const uniqueImageName = helpers.uniqueImageName(gossipImg.originalName);
     const cldUploadStream = cloudinary.v2.uploader.upload_stream(
       {
         public_id: uniqueImageName,
@@ -34,6 +32,7 @@ const uploadFromBuffer = async (gossipImg) =>
     streamifier.createReadStream(gossipImg.buffer).pipe(cldUploadStream);
   });
 
+//* saving image in imageKit by communicating with DAL layer, if it fails to store it in imageKit then storing it in cloudinary
 const saveImage = async (gossipImg) => {
   try {
     const imageData = await postingDAL.saveImage(gossipImg);
@@ -47,7 +46,7 @@ const saveImage = async (gossipImg) => {
     const backupImageData = await uploadFromBuffer(gossipImg);
     console.log('image uploaded to backup image management - cloudinary');
     return {
-      fileId: backupImageData.asset_id,
+      fileId: backupImageData.public_id,
       url: backupImageData.secure_url,
       service: 'cloudinary',
     };
