@@ -25,12 +25,8 @@ const maliciousUrlDetection = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
-        const URL = 'https://ipqualityscore.com/api/json/url/';
-        const formatedLink = helpers.formatLink(msg.url);
-        const response = await axios.get(
-          `${URL}${config.maliciousUrlScannerKey}/${formatedLink}`
-        );
-        if (response.data.unsafe) {
+        const isMalicious = await postingService.maliciousUrlDetection(msg.url);
+        if (isMalicious) {
           console.log('unsafe');
           await publishers.deleteGossip({
             gossip_id: msg.gossip_id,

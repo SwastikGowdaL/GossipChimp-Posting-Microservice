@@ -63,6 +63,22 @@ const saveImage = async (gossipImg) => {
   }
 };
 
+//* checks whether the provided link is malicious or not
+const maliciousUrlDetection = async (link) => {
+  try {
+    const URL = 'https://ipqualityscore.com/api/json/url/';
+    const formatedLink = helpers.formatLink(link);
+    const response = await axios.get(
+      `${URL}${config.maliciousUrlScannerKey}/${formatedLink}`
+    );
+    return response.data.unsafe;
+  } catch (err) {
+    console.log(
+      'something went wrong, while sending a the link to maliciousUrlScannerKey'
+    );
+  }
+};
+
 //* checks whether the provided text is profane or not, if it is profane then cleans it and returns the text, if not then returns as it is
 const badWordsFilter = async (text) => {
   const filter = new Filter();
@@ -162,6 +178,7 @@ const postingService = {
   load_model,
   deleteGossip,
   deleteImage,
+  maliciousUrlDetection,
 };
 
 module.exports = postingService;
