@@ -17,13 +17,20 @@ const connect = async () => {
 //* receives the url and enqueues that in the maliciousUrlDetection queue
 const maliciousUrlDetection = async (message) => {
   try {
-    channel.sendToQueue(
-      'maliciousUrlDetection',
-      Buffer.from(JSON.stringify(message))
-    );
-    console.log(
-      `enqueued message ${message.url} to maliciousUrlDetection queue`
-    );
+    if (config.ENV === 'dev') {
+      channel.sendToQueue(
+        'maliciousUrlDetection',
+        Buffer.from(JSON.stringify(message))
+      );
+      console.log(
+        `enqueued message ${message.url} to maliciousUrlDetection queue`
+      );
+    } else {
+      console.log(
+        `Testing - enqueued message ${message.url} to maliciousUrlDetection queue`
+      );
+      return;
+    }
   } catch (err) {
     console.error(err);
   }

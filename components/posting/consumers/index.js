@@ -62,7 +62,10 @@ const deleteGossip = async () => {
         console.log(deletedGossip);
 
         //* deletes the image if there was any image stored
-        if (deletedGossip.post_img) {
+        const ConvertedDeletedGossip = JSON.parse(
+          JSON.stringify(deletedGossip)
+        );
+        if (Object.hasOwn(ConvertedDeletedGossip, 'post_img')) {
           await postingService.deleteImage(deletedGossip.post_img);
           console.log('image deleted');
         }
