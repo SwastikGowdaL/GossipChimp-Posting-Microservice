@@ -1,5 +1,6 @@
 const cloudinary = require('cloudinary');
 const streamifier = require('streamifier');
+const chalk = require('chalk');
 
 const config = require('../../../config/config');
 const postingDAL = require('../postingDAL');
@@ -10,6 +11,8 @@ cloudinary.config({
   api_key: config.cloudinary_api_key,
   api_secret: config.cloudinary_api_secret,
 });
+
+const { log } = console;
 
 //* storing image in cloudinary
 const uploadFromBuffer = async (gossipImg) =>
@@ -42,7 +45,7 @@ const saveImage = async (gossipImg) => {
       service: 'imageKit',
     };
   } catch (err) {
-    console.log(err);
+    log(chalk.red(err));
     const backupImageData = await uploadFromBuffer(gossipImg);
     console.log('image uploaded to backup image management - cloudinary');
     return {

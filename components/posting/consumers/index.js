@@ -1,5 +1,7 @@
 const amqp = require('amqplib');
 const axios = require('axios');
+const chalk = require('chalk');
+
 const config = require('../../../config/config');
 const publishers = require('../publishers');
 require('../../../db/mongoose');
@@ -8,6 +10,8 @@ const postingService = require('../postingService');
 
 let connection;
 let channel;
+
+const { log } = console;
 
 //* establishing a connection to RabbitMQ server
 //* then creating a channel using that connection
@@ -27,18 +31,18 @@ const maliciousUrlDetection = async () => {
       try {
         const isMalicious = await postingService.maliciousUrlDetection(msg.url);
         if (isMalicious) {
-          console.log('unsafe');
+          log(chalk.black.bgRed.bold('link unsafe'));
           await publishers.deleteGossip({
             gossip_id: msg.gossip_id,
             author_id: msg.author_id,
           });
           channel.ack(message);
         } else {
-          console.log('safe');
+          log(chalk.black.bgGreen.bold('link safe'));
           channel.ack(message);
         }
       } catch (err) {
-        console.log(err);
+        log(chalk.red(err));
       }
     }
   });
@@ -55,7 +59,7 @@ const deleteGossip = async () => {
           msg.gossip_id,
           msg.author_id
         );
-        console.log(deletedGossip);
+        log(chalk.green.bold('gossip deleted'));
 
         //* deletes the image if there was any image stored
         const ConvertedDeletedGossip = JSON.parse(
@@ -63,12 +67,12 @@ const deleteGossip = async () => {
         );
         if (Object.hasOwn(ConvertedDeletedGossip, 'post_img')) {
           await postingService.deleteImage(deletedGossip.post_img);
-          console.log('image deleted');
+          log(chalk.green.bold('image deleted'));
         }
 
         channel.ack(message);
       } catch (err) {
-        console.log(err);
+        log(chalk.red.bold(err));
       }
     }
   });

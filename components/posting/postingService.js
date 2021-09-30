@@ -1,6 +1,7 @@
 const nsfw = require('nsfwjs');
 const Filter = require('bad-words');
 const axios = require('axios');
+const chalk = require('chalk');
 
 const helpers = require('./helpers');
 const postingDAL = require('./postingDAL');
@@ -16,6 +17,8 @@ let _model;
 const load_model = async () => {
   _model = await nsfw.load();
 };
+
+const { log } = console;
 
 //* uses the nsfw module and returns the imageSerenity level
 const imageModeration = async (image) => {
@@ -73,9 +76,7 @@ const maliciousUrlDetection = async (link) => {
     );
     return response.data.unsafe;
   } catch (err) {
-    console.log(
-      'something went wrong, while sending a the link to maliciousUrlScannerKey'
-    );
+    log(chalk.red(err));
   }
 };
 

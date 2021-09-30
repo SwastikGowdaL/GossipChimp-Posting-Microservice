@@ -1,8 +1,11 @@
 const amqp = require('amqplib');
+const chalk = require('chalk');
 const config = require('../../../config/config');
 
 let connection;
 let channel;
+
+const { log } = console;
 
 //* establishing a connection to RabbitMQ server
 //* then creating a channel using that connection
@@ -22,17 +25,19 @@ const maliciousUrlDetection = async (message) => {
         'maliciousUrlDetection',
         Buffer.from(JSON.stringify(message))
       );
-      console.log(
-        `enqueued message ${message.url} to maliciousUrlDetection queue`
+      log(
+        chalk.black.bgYellowBright.bold(
+          `enqueued link ${message.url} to maliciousUrlDetection queue`
+        )
       );
     } else {
       console.log(
-        `Testing - enqueued message ${message.url} to maliciousUrlDetection queue`
+        `Testing - enqueued link ${message.url} to maliciousUrlDetection queue`
       );
       return;
     }
   } catch (err) {
-    console.error(err);
+    log(chalk.red(err));
   }
 };
 
@@ -40,9 +45,13 @@ const maliciousUrlDetection = async (message) => {
 const deleteGossip = async (message) => {
   try {
     channel.sendToQueue('deleteGossip', Buffer.from(JSON.stringify(message)));
-    console.log(`enqueued message ${message.gossip_id} to deleteGossip queue`);
+    log(
+      chalk.black.bgYellowBright.bold(
+        `enqueued gossipID ${message.gossip_id} to deleteGossip queue`
+      )
+    );
   } catch (err) {
-    console.error(err);
+    log(chalk.red(err));
   }
 };
 
