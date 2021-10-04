@@ -53,7 +53,7 @@ const deleteGossip = async (req, res, next) => {
   }
 };
 
-//! this is going to work only when the whole post_img details for it to delete an image is provided
+//! this is going to work only when the whole post_img details are provided
 const deleteImage = async (req, res, next) => {
   try {
     const imageDetails = {

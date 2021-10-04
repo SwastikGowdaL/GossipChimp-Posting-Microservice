@@ -6,8 +6,11 @@ const deleteGossipSchema = require('./schema/deleteGossipSchema');
 const auth = require('./middleware/auth');
 const upload = require('./middleware/multer');
 const { errorHandlingMiddleware } = require('./postingErrors');
+const rateLimiter = require('./middleware/rateLimiter');
 
 const router = new express.Router();
+
+router.use(rateLimiter);
 
 router.post(
   '/posting',
