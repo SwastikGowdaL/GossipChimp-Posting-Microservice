@@ -1,11 +1,12 @@
 const amqp = require('amqplib');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const config = require('../../../config/config');
 
 let connection;
 let channel;
 
-const { log } = console;
+const logger = require('../logger');
+// const { log } = console;
 
 //* establishing a connection to RabbitMQ server
 //* then creating a channel using that connection
@@ -19,39 +20,42 @@ const connect = async () => {
 
 //* receives the url and enqueues that in the maliciousUrlDetection queue
 const maliciousUrlDetection = async (message) => {
+  logger.info('requested to enqueue url to maliciousUrlDetection queue', {
+    abstractionLevel: 'publisher',
+    metaData: 'maliciousUrlDetection',
+  });
   try {
     if (config.ENV === 'dev') {
       channel.sendToQueue(
         'maliciousUrlDetection',
         Buffer.from(JSON.stringify(message))
       );
-      log(
-        chalk.black.bgYellowBright.bold(
-          `enqueued link ${message.url} to maliciousUrlDetection queue`
-        )
-      );
     } else {
       console.log(
         `Testing - enqueued link ${message.url} to maliciousUrlDetection queue`
       );
-      return;
     }
   } catch (err) {
-    log(chalk.red(err));
+    logger.error(err, {
+      abstractionLevel: 'publisher',
+      metaData: 'error in maliciousUrlDetection publisher',
+    });
   }
 };
 
 //* receives the gossipID and enqueues that in the deleteGossip queue
 const deleteGossip = async (message) => {
+  logger.info('requested to enqueue gossipID to deleteGossip queue', {
+    abstractionLevel: 'publisher',
+    metaData: 'deleteGossip',
+  });
   try {
     channel.sendToQueue('deleteGossip', Buffer.from(JSON.stringify(message)));
-    log(
-      chalk.black.bgYellowBright.bold(
-        `enqueued gossipID ${message.gossip_id} to deleteGossip queue`
-      )
-    );
   } catch (err) {
-    log(chalk.red(err));
+    logger.error(err, {
+      abstractionLevel: 'publisher',
+      metaData: 'error in  deleteGossip publisher',
+    });
   }
 };
 

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.65% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/23</span>
+                <span class='fraction'>24/25</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.65% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/23</span>
+                <span class='fraction'>24/25</span>
             </div>
         
             
@@ -113,14 +113,34 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,6 +170,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,9 +181,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -171,16 +203,20 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const cloudinary = require('cloudinary');
 const streamifier = require('streamifier');
+// const chalk = require('chalk');
 &nbsp;
 const config = require('../../../config/config');
 const postingDAL = require('../postingDAL');
 const helpers = require('../helpers');
+const logger = require('../logger');
 &nbsp;
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name,
   api_key: config.cloudinary_api_key,
   api_secret: config.cloudinary_api_secret,
 });
+&nbsp;
+// const { log } = console;
 &nbsp;
 //* storing image in cloudinary
 const uploadFromBuffer = async (gossipImg) =&gt;
@@ -205,6 +241,10 @@ const uploadFromBuffer = async (gossipImg) =&gt;
 &nbsp;
 //* saving image in imageKit by communicating with DAL layer, if it fails to store it in imageKit then storing it in cloudinary
 const saveImage = async (gossipImg) =&gt; {
+  logger.info('requested saveImage Proxy', {
+    abstractionLevel: 'Proxy',
+    metaData: 'saveImage',
+  });
   try {
     const imageData = await postingDAL.saveImage(gossipImg);
     return {
@@ -213,9 +253,17 @@ const saveImage = async (gossipImg) =&gt; {
       service: 'imageKit',
     };
   } catch (err) {
-    console.log(err);
+    // log(chalk.red(err));
+    logger.error(err, {
+      abstractionLevel: 'Proxy',
+      metaData: 'error in saveImage Proxy',
+    });
     const backupImageData = await uploadFromBuffer(gossipImg);
-    console.log('image uploaded to backup image management - cloudinary');
+    logger.warn(err, {
+      abstractionLevel: 'Proxy',
+      metaData:
+        'Image uploaded to backup asset management service - cloudinary',
+    });
     return {
       fileId: backupImageData.public_id,
       url: backupImageData.secure_url,
@@ -232,7 +280,7 @@ module.exports = saveImage;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Sep 29 2021 12:24:58 GMT+0530 (India Standard Time)
+                at Mon Oct 04 2021 18:06:26 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

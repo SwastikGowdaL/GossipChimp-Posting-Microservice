@@ -1,4 +1,7 @@
 const express = require('express');
+const morgan = require('morgan');
+const chalk = require('chalk');
+
 const postingController = require('./postingController');
 const validateSchema = require('./middleware/validateGossip');
 const gossipSchema = require('./schema/gossipSchema');
@@ -9,6 +12,12 @@ const { errorHandlingMiddleware } = require('./postingErrors');
 const rateLimiter = require('./middleware/rateLimiter');
 
 const router = new express.Router();
+
+router.use(
+  morgan(
+    chalk`{bgGreen.black HTTP Log} {yellowBright :remote-user [:date[clf]]} {blueBright :method :url HTTP/:http-version} {green :status} {magenta :res[content-length]} {cyan :referrer :user-agent}`
+  )
+);
 
 router.use(rateLimiter);
 

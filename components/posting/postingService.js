@@ -1,7 +1,7 @@
 const nsfw = require('nsfwjs');
 const Filter = require('bad-words');
 const axios = require('axios');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const helpers = require('./helpers');
 const postingDAL = require('./postingDAL');
@@ -9,6 +9,7 @@ const { ErrorHandler } = require('./postingErrors');
 const config = require('../../config/config');
 const publishers = require('./publishers');
 const proxies = require('./proxies');
+const logger = require('./logger');
 
 //* this variable is used to load the models needed for imageModeration
 let _model;
@@ -18,10 +19,14 @@ const load_model = async () => {
   _model = await nsfw.load();
 };
 
-const { log } = console;
+// const { log } = console;
 
 //* uses the nsfw module and returns the imageSerenity level
 const imageModeration = async (image) => {
+  logger.info('requested image moderation service', {
+    abstractionLevel: 'service',
+    metaData: 'imageModeration',
+  });
   try {
     const convertedImage = await helpers.convert(image.buffer, image.mimeType);
     const predictions = await _model.classify(convertedImage);
@@ -31,6 +36,10 @@ const imageModeration = async (image) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in imageModeration',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -42,9 +51,17 @@ const imageModeration = async (image) => {
 
 //* moderates whether the image is safe or not, if it is, then sends the image to Proxy saveImage for it to be saved in imagekit
 const saveImage = async (gossipImg) => {
+  logger.info('requested save Image service', {
+    abstractionLevel: 'service',
+    metaData: 'saveImage',
+  });
   try {
     const imageSerenity = await imageModeration(gossipImg);
     if (imageSerenity === 'unsafe') {
+      logger.info('image serenity unsafe', {
+        abstractionLevel: 'service',
+        metaData: 'image serenity unsafe',
+      });
       throw new ErrorHandler(
         400,
         'Adult rated content not allowed!',
@@ -57,6 +74,10 @@ const saveImage = async (gossipImg) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in saveImage',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -68,6 +89,10 @@ const saveImage = async (gossipImg) => {
 
 //* checks whether the provided link is malicious or not
 const maliciousUrlDetection = async (link) => {
+  logger.info('requested maliciousUrlDetection service', {
+    abstractionLevel: 'service',
+    metaData: 'maliciousUrlDetection',
+  });
   try {
     const URL = 'https://ipqualityscore.com/api/json/url/';
     const formatedLink = helpers.formatLink(link);
@@ -76,12 +101,20 @@ const maliciousUrlDetection = async (link) => {
     );
     return response.data.unsafe;
   } catch (err) {
-    log(chalk.red(err));
+    // log(chalk.red(err));
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in maliciousUrlDetection',
+    });
   }
 };
 
 //* checks whether the provided text is profane or not, if it is profane then cleans it and returns the text, if not then returns as it is
 const badWordsFilter = async (text) => {
+  logger.info('requested badWordsFilter service', {
+    abstractionLevel: 'service',
+    metaData: 'badWordsFilter',
+  });
   const filter = new Filter();
   if (filter.isProfane(text)) {
     return filter.clean(text);
@@ -91,6 +124,10 @@ const badWordsFilter = async (text) => {
 
 //* saves the gossip & if image and link are there, then saves them as well
 const saveGossip = async (gossipBody, gossipImg) => {
+  logger.info('requested saveGossip service', {
+    abstractionLevel: 'service',
+    metaData: 'saveGossip',
+  });
   try {
     //* storing sanitized text in gossipBody.gossip
     gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
@@ -115,6 +152,10 @@ const saveGossip = async (gossipBody, gossipImg) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in saveGossip',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -126,6 +167,10 @@ const saveGossip = async (gossipBody, gossipImg) => {
 
 //* deletes the gossip only after checking whether the provided authorID matches the actual gossip authorID
 const deleteGossip = async (gossipID, authorID) => {
+  logger.info('requested deleteGossip service', {
+    abstractionLevel: 'service',
+    metaData: 'deleteGossip',
+  });
   try {
     const gossip = await postingDAL.gossip(gossipID);
 
@@ -144,6 +189,10 @@ const deleteGossip = async (gossipID, authorID) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in deleteGossip',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -155,6 +204,10 @@ const deleteGossip = async (gossipID, authorID) => {
 
 //* deletes an image by checking whether it is stored in imageKit or cloudinary then by communicating with the DAL layer
 const deleteImage = async (imageDetails) => {
+  logger.info('requested deleteImage service', {
+    abstractionLevel: 'service',
+    metaData: 'deleteImage',
+  });
   try {
     if (imageDetails.service === 'imageKit') {
       return await postingDAL.deleteImage(imageDetails.fileId);
@@ -164,6 +217,10 @@ const deleteImage = async (imageDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'service',
+      metaData: 'error in deleteImage',
+    });
     throw new ErrorHandler(
       500,
       err.message,

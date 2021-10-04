@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.83% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/24</span>
+                <span class='fraction'>18/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.83% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/24</span>
+                <span class='fraction'>18/24</span>
             </div>
         
             
@@ -116,10 +116,27 @@
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,32 +152,41 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -176,10 +202,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const amqp = require('amqplib');
+// const chalk = require('chalk');
 const config = require('../../../config/config');
 &nbsp;
 let connection;
 let channel;
+&nbsp;
+const logger = require('../logger');
+// const { log } = console;
 &nbsp;
 //* establishing a connection to RabbitMQ server
 //* then creating a channel using that connection
@@ -193,33 +223,42 @@ const connect = async () =&gt; {
 &nbsp;
 //* receives the url and enqueues that in the maliciousUrlDetection queue
 const maliciousUrlDetection = async (message) =&gt; {
+  logger.info('requested to enqueue url to maliciousUrlDetection queue', {
+    abstractionLevel: 'publisher',
+    metaData: 'maliciousUrlDetection',
+  });
   try {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (config.ENV === 'dev') {
 <span class="cstat-no" title="statement not covered" >      channel.sendToQueue(</span>
         'maliciousUrlDetection',
         Buffer.from(JSON.stringify(message))
       );
-<span class="cstat-no" title="statement not covered" >      console.log(</span>
-        `enqueued message ${message.url} to maliciousUrlDetection queue`
-      );
     } else {
       console.log(
-        `Testing - enqueued message ${message.url} to maliciousUrlDetection queue`
+        `Testing - enqueued link ${message.url} to maliciousUrlDetection queue`
       );
-      return;
     }
   } catch (err) {
-<span class="cstat-no" title="statement not covered" >    console.error(err);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(err, {</span>
+      abstractionLevel: 'publisher',
+      metaData: 'error in maliciousUrlDetection publisher',
+    });
   }
 };
 &nbsp;
 //* receives the gossipID and enqueues that in the deleteGossip queue
 const deleteGossip = <span class="fstat-no" title="function not covered" >as</span>ync (message) =&gt; {
+<span class="cstat-no" title="statement not covered" >  logger.info('requested to enqueue gossipID to deleteGossip queue', {</span>
+    abstractionLevel: 'publisher',
+    metaData: 'deleteGossip',
+  });
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    channel.sendToQueue('deleteGossip', Buffer.from(JSON.stringify(message)));</span>
-<span class="cstat-no" title="statement not covered" >    console.log(`enqueued message ${message.gossip_id} to deleteGossip queue`);</span>
   } catch (err) {
-<span class="cstat-no" title="statement not covered" >    console.error(err);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(err, {</span>
+      abstractionLevel: 'publisher',
+      metaData: 'error in  deleteGossip publisher',
+    });
   }
 };
 &nbsp;
@@ -241,7 +280,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Sep 29 2021 12:24:58 GMT+0530 (India Standard Time)
+                at Mon Oct 04 2021 18:06:26 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

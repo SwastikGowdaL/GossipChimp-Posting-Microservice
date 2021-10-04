@@ -1,8 +1,13 @@
 const postingService = require('./postingService');
 const { ErrorHandler } = require('./postingErrors');
+const logger = require('./logger');
 
 //* saves the gossip
 const posting = async (req, res, next) => {
+  logger.info('posting request received', {
+    abstractionLevel: 'controller',
+    metaData: 'posting',
+  });
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
     let gossipImg;
@@ -22,6 +27,10 @@ const posting = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
+    logger.error(err, {
+      abstractionLevel: 'controller',
+      metaData: 'error in posting',
+    });
     const error = new ErrorHandler(
       500,
       err.message,
@@ -35,6 +44,10 @@ const posting = async (req, res, next) => {
 //* deletes the gossip
 const deleteGossip = async (req, res, next) => {
   try {
+    logger.info('delete request received', {
+      abstractionLevel: 'controller',
+      metaData: 'deleteGossip',
+    });
     const gossipID = req.body.gossip_id;
     const authorID = req.body.author_id;
     await postingService.deleteGossip(gossipID, authorID);
@@ -43,6 +56,10 @@ const deleteGossip = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
+    logger.error(err, {
+      abstractionLevel: 'controller',
+      metaData: 'error in deleteGossip',
+    });
     const error = new ErrorHandler(
       500,
       err.message,
@@ -56,6 +73,10 @@ const deleteGossip = async (req, res, next) => {
 //! this is going to work only when the whole post_img details are provided
 const deleteImage = async (req, res, next) => {
   try {
+    logger.info('delete image request received', {
+      abstractionLevel: 'controller',
+      metaData: 'deleteImage',
+    });
     const imageDetails = {
       fileId: req.body.fileId,
       service: req.body.service,
@@ -69,6 +90,10 @@ const deleteImage = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
+    logger.error(err, {
+      abstractionLevel: 'controller',
+      metaData: 'error in deleteImage',
+    });
     const error = new ErrorHandler(
       500,
       err.message,

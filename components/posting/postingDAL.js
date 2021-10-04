@@ -1,7 +1,8 @@
 const ImageKit = require('imagekit');
 const cloudinary = require('cloudinary');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
+const logger = require('./logger');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const { ErrorHandler } = require('./postingErrors');
@@ -18,10 +19,14 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-const { log } = console;
+// const { log } = console;
 
 //* saves new gossip in the database
 exports.saveGossip = async (gossipBody) => {
+  logger.info('requested saveGossip DAL', {
+    abstractionLevel: 'DAL',
+    metaData: 'saveGossip',
+  });
   try {
     const gossip = new Gossip(gossipBody);
     return await gossip.save();
@@ -29,6 +34,10 @@ exports.saveGossip = async (gossipBody) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'DAL',
+      metaData: 'error in saveGossip',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -41,6 +50,10 @@ exports.saveGossip = async (gossipBody) => {
 //* uploads the image to imageKit.io and returns the uploaded image details
 exports.saveImage = async (gossipImg) =>
   new Promise((resolve, reject) => {
+    logger.info('requested saveImage DAL', {
+      abstractionLevel: 'DAL',
+      metaData: 'saveImage',
+    });
     imagekit.upload(
       {
         file: gossipImg.buffer, // required
@@ -49,7 +62,10 @@ exports.saveImage = async (gossipImg) =>
       },
       function (error, result) {
         if (error) {
-          log(chalk.red(error));
+          logger.error(error, {
+            abstractionLevel: 'DAL',
+            metaData: 'error in saveGossip',
+          });
           reject(error);
         } else {
           resolve(result);
@@ -60,6 +76,10 @@ exports.saveImage = async (gossipImg) =>
 
 //* deletes the gossip
 exports.deleteGossip = async (gossipID) => {
+  logger.info('requested deleteGossip DAL', {
+    abstractionLevel: 'DAL',
+    metaData: 'deleteGossip',
+  });
   try {
     const gossip = await Gossip.findByIdAndDelete(gossipID);
     if (!gossip) {
@@ -75,6 +95,10 @@ exports.deleteGossip = async (gossipID) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'DAL',
+      metaData: 'error in deleteGossip',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -86,6 +110,10 @@ exports.deleteGossip = async (gossipID) => {
 
 //* finds the gossip for the specified gossipID
 exports.gossip = async (gossipID) => {
+  logger.info('requested gossip DAL', {
+    abstractionLevel: 'DAL',
+    metaData: 'gossip',
+  });
   try {
     const gossip = await Gossip.findById(gossipID);
 
@@ -103,6 +131,10 @@ exports.gossip = async (gossipID) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    logger.error(err, {
+      abstractionLevel: 'DAL',
+      metaData: 'error in gossip',
+    });
     throw new ErrorHandler(
       500,
       err.message,
@@ -115,9 +147,16 @@ exports.gossip = async (gossipID) => {
 //* deletes the image from the imagekit
 exports.deleteImage = async (imageID) =>
   new Promise((resolve, reject) => {
+    logger.info('requested deleteImage DAL', {
+      abstractionLevel: 'DAL',
+      metaData: 'deleteImage',
+    });
     imagekit.deleteFile(imageID, function (error1, result1) {
       if (error1) {
-        log(chalk.red(error1));
+        logger.error(error1, {
+          abstractionLevel: 'DAL',
+          metaData: 'error in deleteImage',
+        });
         reject(error1);
       } else {
         resolve(result1);
@@ -126,10 +165,18 @@ exports.deleteImage = async (imageID) =>
   });
 
 //* deletes the image from cloudinary
-exports.deleteBackupImage = async (publicID) =>
-  cloudinary.v2.uploader.destroy(publicID, {}, function (error, result) {
+exports.deleteBackupImage = async (publicID) => {
+  logger.info('requested deleteBackupImage DAL', {
+    abstractionLevel: 'DAL',
+    metaData: 'deleteBackupImage',
+  });
+  return cloudinary.v2.uploader.destroy(publicID, {}, function (error, result) {
     if (error) {
-      log(chalk.red(error));
+      logger.error(error, {
+        abstractionLevel: 'DAL',
+        metaData: 'error in deleteBackupImage',
+      });
     }
     return result;
   });
+};

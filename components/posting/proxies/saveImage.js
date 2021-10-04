@@ -1,10 +1,11 @@
 const cloudinary = require('cloudinary');
 const streamifier = require('streamifier');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const config = require('../../../config/config');
 const postingDAL = require('../postingDAL');
 const helpers = require('../helpers');
+const logger = require('../logger');
 
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name,
@@ -12,7 +13,7 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-const { log } = console;
+// const { log } = console;
 
 //* storing image in cloudinary
 const uploadFromBuffer = async (gossipImg) =>
@@ -37,6 +38,10 @@ const uploadFromBuffer = async (gossipImg) =>
 
 //* saving image in imageKit by communicating with DAL layer, if it fails to store it in imageKit then storing it in cloudinary
 const saveImage = async (gossipImg) => {
+  logger.info('requested saveImage Proxy', {
+    abstractionLevel: 'Proxy',
+    metaData: 'saveImage',
+  });
   try {
     const imageData = await postingDAL.saveImage(gossipImg);
     return {
@@ -45,9 +50,17 @@ const saveImage = async (gossipImg) => {
       service: 'imageKit',
     };
   } catch (err) {
-    log(chalk.red(err));
+    // log(chalk.red(err));
+    logger.error(err, {
+      abstractionLevel: 'Proxy',
+      metaData: 'error in saveImage Proxy',
+    });
     const backupImageData = await uploadFromBuffer(gossipImg);
-    console.log('image uploaded to backup image management - cloudinary');
+    logger.warn(err, {
+      abstractionLevel: 'Proxy',
+      metaData:
+        'Image uploaded to backup asset management service - cloudinary',
+    });
     return {
       fileId: backupImageData.public_id,
       url: backupImageData.secure_url,

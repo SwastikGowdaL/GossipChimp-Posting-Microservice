@@ -7,6 +7,7 @@ const publishers = require('../publishers');
 require('../../../db/mongoose');
 const helpers = require('../helpers');
 const postingService = require('../postingService');
+const logger = require('../logger');
 
 let connection;
 let channel;
@@ -29,6 +30,13 @@ const maliciousUrlDetection = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
+        logger.info(
+          'requested to dequeue url from maliciousUrlDetection queue and process',
+          {
+            abstractionLevel: 'consumer',
+            metaData: 'maliciousUrlDetection',
+          }
+        );
         const isMalicious = await postingService.maliciousUrlDetection(msg.url);
         if (isMalicious) {
           log(chalk.black.bgRed.bold('link unsafe'));
@@ -42,7 +50,10 @@ const maliciousUrlDetection = async () => {
           channel.ack(message);
         }
       } catch (err) {
-        log(chalk.red(err));
+        logger.error(err, {
+          abstractionLevel: 'consumer',
+          metaData: 'error in maliciousUrlDetection consumer',
+        });
       }
     }
   });
@@ -54,6 +65,13 @@ const deleteGossip = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
+        logger.info(
+          'requested to dequeue gossipID from deleteGossip queue and process',
+          {
+            abstractionLevel: 'consumer',
+            metaData: 'maliciousUrlDetection',
+          }
+        );
         //* deletes the gossip by communicating with the deleteGossip service
         const deletedGossip = await postingService.deleteGossip(
           msg.gossip_id,
