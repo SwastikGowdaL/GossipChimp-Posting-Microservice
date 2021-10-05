@@ -110,10 +110,12 @@ const maliciousUrlDetection = async (link) => {
 };
 
 //* checks whether the provided text is profane or not, if it is profane then cleans it and returns the text, if not then returns as it is
-const badWordsFilter = async (text) => {
+const badWordsFilter = async (text, uuid, clientDetails) => {
   logger.info('requested badWordsFilter service', {
     abstractionLevel: 'service',
     metaData: 'badWordsFilter',
+    uuid,
+    clientDetails,
   });
   const filter = new Filter();
   if (filter.isProfane(text)) {
@@ -123,14 +125,20 @@ const badWordsFilter = async (text) => {
 };
 
 //* saves the gossip & if image and link are there, then saves them as well
-const saveGossip = async (gossipBody, gossipImg) => {
+const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
   logger.info('requested saveGossip service', {
     abstractionLevel: 'service',
     metaData: 'saveGossip',
+    uuid,
+    clientDetails,
   });
   try {
     //* storing sanitized text in gossipBody.gossip
-    gossipBody.gossip = await badWordsFilter(gossipBody.gossip);
+    gossipBody.gossip = await badWordsFilter(
+      gossipBody.gossip,
+      uuid,
+      clientDetails
+    );
 
     //* checking whether the user provided an image
     if (gossipImg) {
@@ -138,7 +146,11 @@ const saveGossip = async (gossipBody, gossipImg) => {
       gossipBody.post_img = imageData;
     }
 
-    const savedGossip = await postingDAL.saveGossip(gossipBody);
+    const savedGossip = await postingDAL.saveGossip(
+      gossipBody,
+      uuid,
+      clientDetails
+    );
 
     //* checking whether the user provided a link
     if (gossipBody.link) {

@@ -22,10 +22,12 @@ cloudinary.config({
 // const { log } = console;
 
 //* saves new gossip in the database
-exports.saveGossip = async (gossipBody) => {
+exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
   logger.info('requested saveGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'saveGossip',
+    uuid,
+    clientDetails,
   });
   try {
     const gossip = new Gossip(gossipBody);
@@ -37,6 +39,8 @@ exports.saveGossip = async (gossipBody) => {
     logger.error(err, {
       abstractionLevel: 'DAL',
       metaData: 'error in saveGossip',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,

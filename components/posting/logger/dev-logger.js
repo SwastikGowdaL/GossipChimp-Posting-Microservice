@@ -1,6 +1,6 @@
 const { createLogger, format, transports } = require('winston');
 
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, label, printf, json, prettyPrint } = format;
 
 const logFormat = printf(
   // eslint-disable-next-line no-shadow
@@ -16,7 +16,7 @@ const buildDevLogger = () =>
     format: combine(
       format.colorize(),
       label({
-        label: 'application error in dev',
+        label: 'Dev-logger',
       }),
       timestamp({
         format: 'DD-MM-YYYY HH:mm:ss',
@@ -26,10 +26,7 @@ const buildDevLogger = () =>
       }),
       logFormat
     ),
-    level: 'silly', // log level
-    defaultMeta: {
-      country: 'gossip chimp',
-    }, // default meta data
+    level: 'silly',
     transports: [
       new transports.Console({
         level: 'silly',

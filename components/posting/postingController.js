@@ -1,13 +1,17 @@
 const postingService = require('./postingService');
 const { ErrorHandler } = require('./postingErrors');
 const logger = require('./logger');
+const helpers = require('./helpers');
 
 //* saves the gossip
 const posting = async (req, res, next) => {
   logger.info('posting request received', {
     abstractionLevel: 'controller',
     metaData: 'posting',
+    uuid: req.body.uuid,
+    clientDetails: helpers.userAgent(req.useragent),
   });
+  const { uuid } = req.body;
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
     let gossipImg;
@@ -19,7 +23,12 @@ const posting = async (req, res, next) => {
         mimeType: req.file.mimetype,
       };
     }
-    await postingService.saveGossip(gossipBody, gossipImg);
+    await postingService.saveGossip(
+      gossipBody,
+      gossipImg,
+      uuid,
+      helpers.userAgent(req.useragent)
+    );
     res.status(201).send({
       status: 'success',
     });
@@ -30,6 +39,8 @@ const posting = async (req, res, next) => {
     logger.error(err, {
       abstractionLevel: 'controller',
       metaData: 'error in posting',
+      uuid: req.body.uuid,
+      clientDetails: helpers.userAgent(req.useragent),
     });
     const error = new ErrorHandler(
       500,

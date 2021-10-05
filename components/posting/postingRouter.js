@@ -1,7 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
 const chalk = require('chalk');
+const fs = require('fs');
+const path = require('path');
 
+// const { agent } = require('superagent');
+const useragent = require('express-useragent');
 const postingController = require('./postingController');
 const validateSchema = require('./middleware/validateGossip');
 const gossipSchema = require('./schema/gossipSchema');
@@ -10,22 +14,20 @@ const auth = require('./middleware/auth');
 const upload = require('./middleware/multer');
 const { errorHandlingMiddleware } = require('./postingErrors');
 const rateLimiter = require('./middleware/rateLimiter');
+const uuid = require('./middleware/uuid');
 
 const router = new express.Router();
 
-router.use(
-  morgan(
-    chalk`{bgGreen.black HTTP Log} {yellowBright :remote-user [:date[clf]]} {blueBright :method :url HTTP/:http-version} {green :status} {magenta :res[content-length]} {cyan :referrer :user-agent}`
-  )
-);
-
 router.use(rateLimiter);
+
+router.use(useragent.express());
 
 router.post(
   '/posting',
   auth,
   upload.single('post_img'),
   validateSchema(gossipSchema),
+  uuid,
   postingController.posting
 );
 

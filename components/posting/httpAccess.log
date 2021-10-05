@@ -1,0 +1,4 @@
+::1 - POST /posting HTTP/1.1 201 20 - 64.891 ms
+::1 - POST /posting HTTP/1.1 201 20 - 50.682 ms
+::1 - - [05/Oct/2021:06:59:16 +0000] "POST /posting HTTP/1.1" 201 20 "-" "PostmanRuntime/7.28.4"
+::1 - - [05/Oct/2021:07:01:43 +0000] "POST /posting HTTP/1.1" 201 20 "-" "PostmanRuntime/7.28.4"

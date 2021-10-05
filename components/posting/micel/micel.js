@@ -74,3 +74,43 @@
 //       );
 //     }
 //   };
+
+// router.use(
+//   morgan(
+//     chalk`{bgGreen.black HTTP Log} {yellowBright :remote-user [:date[clf]]} {blueBright :method :url HTTP/:http-version} {green :status} {magenta :res[content-length]} {cyan :referrer :user-agent}`
+//   )
+// );
+
+// configuring morgan and writing the logs in access.log file
+// const accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, 'httpAccess.log'),
+//   {
+//     flags: 'a',
+//   }
+// );
+// router.use(
+//   morgan('combined', {
+//     stream: accessLogStream,
+//   })
+// );
+
+// router.use(
+//   morgan(function (tokens, req, res) {
+//     return [
+//       tokens.method(req, res),
+//       tokens.url(req, res),
+//       tokens.status(req, res),
+//       tokens.res(req, res, 'content-length'),
+//       '-',
+//       tokens['response-time'](req, res),
+//       'ms',
+//     ].join(' ');
+// console.log(tokens.method(req, res));
+// req.morganDetails = [
+//   tokens.method(req, res),
+//   tokens.url(req, res),
+//   tokens.status(req, res),
+// ].join(' ');
+// return [tokens.referrer(req, res)];
+//   })
+// );

@@ -2,13 +2,18 @@
   "git.ignoreLimitWarning": true,
   "cSpell.words": ["apikey", "cloudinary", "imagekit"],
   "cSpell.ignoreWords": [
+    "9OHGML6",
     "SwastikGowda_FullStackEngg",
     "amqps",
     "camelcase",
+    "datadoghq",
+    "ddsource",
+    "ddtags",
     "derx4vp3v",
     "dijiydvz",
     "jFcwNEjYVUsaUj2DVh7EZCKDv6kkBPbd",
     "public_9JjmnGTnjSpq4Vqo5PoB0HVH0eo",
+    "sourcecategory",
     "srh1RqDVC_Oliq6TUIGVOJz4fNE"
   ]
 }
