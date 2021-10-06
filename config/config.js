@@ -35,4 +35,10 @@ module.exports = {
 
   //* Log management
   LOG: process.env.LOG,
+
+  //* data dog logger keys
+  DATA_DOG_DDSOURCE: process.env.DATA_DOG_DDSOURCE,
+  DATA_DOG_SERVICE: process.env.DATA_DOG_SERVICE,
+  DATA_DOG_HOSTNAME: process.env.DATA_DOG_HOSTNAME,
+  DATA_DOG_API_KEY: process.env.DATA_DOG_API_KEY,
 };

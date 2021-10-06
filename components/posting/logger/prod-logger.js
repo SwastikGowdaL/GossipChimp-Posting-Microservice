@@ -1,8 +1,10 @@
+const DatadogWinston = require('datadog-winston');
+
 const { createLogger, format, transports } = require('winston');
 
 const { combine, timestamp, label, json } = format;
 
-const DatadogWinston = require('datadog-winston');
+const config = require('../../../config/config');
 
 // custom logger
 const buildDevLogger = () => {
@@ -25,10 +27,10 @@ const buildDevLogger = () => {
 
   logger.add(
     new DatadogWinston({
-      apiKey: '8c50c3a0b49485e943dba6a5a4b7c1a6',
-      hostname: 'DESKTOP-9OHGML6',
-      service: 'gossipChimp posting Microservice',
-      ddsource: 'nodejs',
+      apiKey: config.DATA_DOG_API_KEY,
+      hostname: config.DATA_DOG_HOSTNAME,
+      service: config.DATA_DOG_SERVICE,
+      ddsource: config.DATA_DOG_DDSOURCE,
     })
   );
 
