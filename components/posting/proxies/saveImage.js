@@ -37,13 +37,19 @@ const uploadFromBuffer = async (gossipImg) =>
   });
 
 //* saving image in imageKit by communicating with DAL layer, if it fails to store it in imageKit then storing it in cloudinary
-const saveImage = async (gossipImg) => {
+const saveImage = async (gossipImg, uuid, clientDetails) => {
   logger.info('requested saveImage Proxy', {
     abstractionLevel: 'Proxy',
     metaData: 'saveImage',
+    uuid,
+    clientDetails,
   });
   try {
-    const imageData = await postingDAL.saveImage(gossipImg);
+    const imageData = await postingDAL.saveImage(
+      gossipImg,
+      uuid,
+      clientDetails
+    );
     return {
       fileId: imageData.fileId,
       url: imageData.url,
@@ -54,12 +60,16 @@ const saveImage = async (gossipImg) => {
     logger.error(err, {
       abstractionLevel: 'Proxy',
       metaData: 'error in saveImage Proxy',
+      uuid,
+      clientDetails,
     });
     const backupImageData = await uploadFromBuffer(gossipImg);
     logger.warn(err, {
       abstractionLevel: 'Proxy',
       metaData:
         'Image uploaded to backup asset management service - cloudinary',
+      uuid,
+      clientDetails,
     });
     return {
       fileId: backupImageData.public_id,

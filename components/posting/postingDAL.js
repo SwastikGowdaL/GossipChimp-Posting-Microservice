@@ -52,11 +52,13 @@ exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
 };
 
 //* uploads the image to imageKit.io and returns the uploaded image details
-exports.saveImage = async (gossipImg) =>
+exports.saveImage = async (gossipImg, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
     logger.info('requested saveImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'saveImage',
+      uuid,
+      clientDetails,
     });
     imagekit.upload(
       {
@@ -69,6 +71,8 @@ exports.saveImage = async (gossipImg) =>
           logger.error(error, {
             abstractionLevel: 'DAL',
             metaData: 'error in saveGossip',
+            uuid,
+            clientDetails,
           });
           reject(error);
         } else {
@@ -79,10 +83,12 @@ exports.saveImage = async (gossipImg) =>
   });
 
 //* deletes the gossip
-exports.deleteGossip = async (gossipID) => {
+exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
   logger.info('requested deleteGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteGossip',
+    uuid,
+    clientDetails,
   });
   try {
     const gossip = await Gossip.findByIdAndDelete(gossipID);
@@ -102,6 +108,8 @@ exports.deleteGossip = async (gossipID) => {
     logger.error(err, {
       abstractionLevel: 'DAL',
       metaData: 'error in deleteGossip',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -113,10 +121,12 @@ exports.deleteGossip = async (gossipID) => {
 };
 
 //* finds the gossip for the specified gossipID
-exports.gossip = async (gossipID) => {
+exports.gossip = async (gossipID, uuid, clientDetails) => {
   logger.info('requested gossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'gossip',
+    uuid,
+    clientDetails,
   });
   try {
     const gossip = await Gossip.findById(gossipID);
@@ -138,6 +148,8 @@ exports.gossip = async (gossipID) => {
     logger.error(err, {
       abstractionLevel: 'DAL',
       metaData: 'error in gossip',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -149,17 +161,21 @@ exports.gossip = async (gossipID) => {
 };
 
 //* deletes the image from the imagekit
-exports.deleteImage = async (imageID) =>
+exports.deleteImage = async (imageID, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
     logger.info('requested deleteImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'deleteImage',
+      uuid,
+      clientDetails,
     });
     imagekit.deleteFile(imageID, function (error1, result1) {
       if (error1) {
         logger.error(error1, {
           abstractionLevel: 'DAL',
           metaData: 'error in deleteImage',
+          uuid,
+          clientDetails,
         });
         reject(error1);
       } else {
@@ -169,16 +185,20 @@ exports.deleteImage = async (imageID) =>
   });
 
 //* deletes the image from cloudinary
-exports.deleteBackupImage = async (publicID) => {
+exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
   logger.info('requested deleteBackupImage DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteBackupImage',
+    uuid,
+    clientDetails,
   });
   return cloudinary.v2.uploader.destroy(publicID, {}, function (error, result) {
     if (error) {
       logger.error(error, {
         abstractionLevel: 'DAL',
         metaData: 'error in deleteBackupImage',
+        uuid,
+        clientDetails,
       });
     }
     return result;

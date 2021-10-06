@@ -35,15 +35,31 @@ const maliciousUrlDetection = async () => {
           {
             abstractionLevel: 'consumer',
             metaData: 'maliciousUrlDetection',
+            uuid: msg.uuid,
+            clientDetails: msg.clientDetails,
           }
         );
-        const isMalicious = await postingService.maliciousUrlDetection(msg.url);
+        const isMalicious = await postingService.maliciousUrlDetection(
+          msg.url,
+          msg.uuid,
+          msg.clientDetails
+        );
         if (isMalicious) {
           log(chalk.black.bgRed.bold('link unsafe'));
-          await publishers.deleteGossip({
-            gossip_id: msg.gossip_id,
-            author_id: msg.author_id,
+          logger.warn('unsafe link detected', {
+            abstractionLevel: 'consumer',
+            metaData: 'maliciousUrlDetection',
+            uuid: msg.uuid,
+            clientDetails: msg.clientDetails,
           });
+          await publishers.deleteGossip(
+            {
+              gossip_id: msg.gossip_id,
+              author_id: msg.author_id,
+            },
+            msg.uuid,
+            msg.clientDetails
+          );
           channel.ack(message);
         } else {
           log(chalk.black.bgGreen.bold('link safe'));
@@ -53,6 +69,8 @@ const maliciousUrlDetection = async () => {
         logger.error(err, {
           abstractionLevel: 'consumer',
           metaData: 'error in maliciousUrlDetection consumer',
+          uuid: msg.uuid,
+          clientDetails: msg.clientDetails,
         });
       }
     }
@@ -70,12 +88,16 @@ const deleteGossip = async () => {
           {
             abstractionLevel: 'consumer',
             metaData: 'maliciousUrlDetection',
+            uuid: msg.uuid,
+            clientDetails: msg.clientDetails,
           }
         );
         //* deletes the gossip by communicating with the deleteGossip service
         const deletedGossip = await postingService.deleteGossip(
           msg.gossip_id,
-          msg.author_id
+          msg.author_id,
+          msg.uuid,
+          msg.clientDetails
         );
         log(chalk.green.bold('gossip deleted'));
 
@@ -84,7 +106,11 @@ const deleteGossip = async () => {
           JSON.stringify(deletedGossip)
         );
         if (Object.hasOwn(ConvertedDeletedGossip, 'post_img')) {
-          await postingService.deleteImage(deletedGossip.post_img);
+          await postingService.deleteImage(
+            deletedGossip.post_img,
+            msg.uuid,
+            msg.clientDetails
+          );
           log(chalk.green.bold('image deleted'));
         }
 

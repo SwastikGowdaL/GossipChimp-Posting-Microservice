@@ -19,11 +19,15 @@ const connect = async () => {
 };
 
 //* receives the url and enqueues that in the maliciousUrlDetection queue
-const maliciousUrlDetection = async (message) => {
+const maliciousUrlDetection = async (message, uuid, clientDetails) => {
   logger.info('requested to enqueue url to maliciousUrlDetection queue', {
     abstractionLevel: 'publisher',
     metaData: 'maliciousUrlDetection',
+    uuid,
+    clientDetails,
   });
+  message.uuid = uuid;
+  message.clientDetails = clientDetails;
   try {
     if (config.ENV === 'dev') {
       channel.sendToQueue(
@@ -39,22 +43,30 @@ const maliciousUrlDetection = async (message) => {
     logger.error(err, {
       abstractionLevel: 'publisher',
       metaData: 'error in maliciousUrlDetection publisher',
+      uuid,
+      clientDetails,
     });
   }
 };
 
 //* receives the gossipID and enqueues that in the deleteGossip queue
-const deleteGossip = async (message) => {
+const deleteGossip = async (message, uuid, clientDetails) => {
   logger.info('requested to enqueue gossipID to deleteGossip queue', {
     abstractionLevel: 'publisher',
     metaData: 'deleteGossip',
+    uuid,
+    clientDetails,
   });
+  message.uuid = uuid;
+  message.clientDetails = clientDetails;
   try {
     channel.sendToQueue('deleteGossip', Buffer.from(JSON.stringify(message)));
   } catch (err) {
     logger.error(err, {
       abstractionLevel: 'publisher',
       metaData: 'error in  deleteGossip publisher',
+      uuid,
+      clientDetails,
     });
   }
 };

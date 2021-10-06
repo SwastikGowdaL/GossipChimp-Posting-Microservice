@@ -35,10 +35,11 @@ router.delete(
   '/post',
   auth,
   validateSchema(deleteGossipSchema),
+  uuid,
   postingController.deleteGossip
 );
 
-router.delete('/image', auth, postingController.deleteImage);
+router.delete('/image', auth, uuid, postingController.deleteImage);
 
 router.use(errorHandlingMiddleware);
 

@@ -9,8 +9,9 @@ const posting = async (req, res, next) => {
     abstractionLevel: 'controller',
     metaData: 'posting',
     uuid: req.body.uuid,
-    clientDetails: helpers.userAgent(req.useragent),
+    clientDetails: helpers.userAgent(req.useragent, req.ip),
   });
+  // console.log(helpers.userAgent(req.useragent, req.ip));
   const { uuid } = req.body;
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
@@ -27,7 +28,7 @@ const posting = async (req, res, next) => {
       gossipBody,
       gossipImg,
       uuid,
-      helpers.userAgent(req.useragent)
+      helpers.userAgent(req.useragent, req.ip)
     );
     res.status(201).send({
       status: 'success',
@@ -40,7 +41,7 @@ const posting = async (req, res, next) => {
       abstractionLevel: 'controller',
       metaData: 'error in posting',
       uuid: req.body.uuid,
-      clientDetails: helpers.userAgent(req.useragent),
+      clientDetails: helpers.userAgent(req.useragent, req.ip),
     });
     const error = new ErrorHandler(
       500,
@@ -58,10 +59,18 @@ const deleteGossip = async (req, res, next) => {
     logger.info('delete request received', {
       abstractionLevel: 'controller',
       metaData: 'deleteGossip',
+      uuid: req.body.uuid,
+      clientDetails: helpers.userAgent(req.useragent, req.ip),
     });
     const gossipID = req.body.gossip_id;
     const authorID = req.body.author_id;
-    await postingService.deleteGossip(gossipID, authorID);
+    const { uuid } = req.body;
+    await postingService.deleteGossip(
+      gossipID,
+      authorID,
+      uuid,
+      helpers.userAgent(req.useragent, req.ip)
+    );
     res.status(200).send({ status: 'success', message: 'post deleted' });
   } catch (err) {
     if (err instanceof ErrorHandler) {
@@ -70,6 +79,8 @@ const deleteGossip = async (req, res, next) => {
     logger.error(err, {
       abstractionLevel: 'controller',
       metaData: 'error in deleteGossip',
+      uuid: req.body.uuid,
+      clientDetails: helpers.userAgent(req.useragent, req.ip),
     });
     const error = new ErrorHandler(
       500,
@@ -87,12 +98,19 @@ const deleteImage = async (req, res, next) => {
     logger.info('delete image request received', {
       abstractionLevel: 'controller',
       metaData: 'deleteImage',
+      uuid: req.body.uuid,
+      clientDetails: helpers.userAgent(req.useragent, req.ip),
     });
     const imageDetails = {
       fileId: req.body.fileId,
       service: req.body.service,
     };
-    await postingService.deleteImage(imageDetails);
+    const { uuid } = req.body;
+    await postingService.deleteImage(
+      imageDetails,
+      uuid,
+      helpers.userAgent(req.useragent, req.ip)
+    );
     res.status(200).send({
       status: 'success',
       message: 'image deleted',
@@ -104,6 +122,8 @@ const deleteImage = async (req, res, next) => {
     logger.error(err, {
       abstractionLevel: 'controller',
       metaData: 'error in deleteImage',
+      uuid: req.body.uuid,
+      clientDetails: helpers.userAgent(req.useragent, req.ip),
     });
     const error = new ErrorHandler(
       500,

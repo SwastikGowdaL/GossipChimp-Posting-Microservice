@@ -22,10 +22,12 @@ const load_model = async () => {
 // const { log } = console;
 
 //* uses the nsfw module and returns the imageSerenity level
-const imageModeration = async (image) => {
+const imageModeration = async (image, uuid, clientDetails) => {
   logger.info('requested image moderation service', {
     abstractionLevel: 'service',
     metaData: 'imageModeration',
+    uuid,
+    clientDetails,
   });
   try {
     const convertedImage = await helpers.convert(image.buffer, image.mimeType);
@@ -39,6 +41,8 @@ const imageModeration = async (image) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in imageModeration',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -50,17 +54,21 @@ const imageModeration = async (image) => {
 };
 
 //* moderates whether the image is safe or not, if it is, then sends the image to Proxy saveImage for it to be saved in imagekit
-const saveImage = async (gossipImg) => {
+const saveImage = async (gossipImg, uuid, clientDetails) => {
   logger.info('requested save Image service', {
     abstractionLevel: 'service',
     metaData: 'saveImage',
+    uuid,
+    clientDetails,
   });
   try {
-    const imageSerenity = await imageModeration(gossipImg);
+    const imageSerenity = await imageModeration(gossipImg, uuid, clientDetails);
     if (imageSerenity === 'unsafe') {
       logger.info('image serenity unsafe', {
         abstractionLevel: 'service',
         metaData: 'image serenity unsafe',
+        uuid,
+        clientDetails,
       });
       throw new ErrorHandler(
         400,
@@ -69,7 +77,7 @@ const saveImage = async (gossipImg) => {
         true
       );
     }
-    return await proxies.saveImage(gossipImg);
+    return await proxies.saveImage(gossipImg, uuid, clientDetails);
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -77,6 +85,8 @@ const saveImage = async (gossipImg) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in saveImage',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -88,10 +98,12 @@ const saveImage = async (gossipImg) => {
 };
 
 //* checks whether the provided link is malicious or not
-const maliciousUrlDetection = async (link) => {
+const maliciousUrlDetection = async (link, uuid, clientDetails) => {
   logger.info('requested maliciousUrlDetection service', {
     abstractionLevel: 'service',
     metaData: 'maliciousUrlDetection',
+    uuid,
+    clientDetails,
   });
   try {
     const URL = 'https://ipqualityscore.com/api/json/url/';
@@ -105,6 +117,8 @@ const maliciousUrlDetection = async (link) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in maliciousUrlDetection',
+      uuid,
+      clientDetails,
     });
   }
 };
@@ -142,7 +156,7 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
 
     //* checking whether the user provided an image
     if (gossipImg) {
-      const imageData = await saveImage(gossipImg);
+      const imageData = await saveImage(gossipImg, uuid, clientDetails);
       gossipBody.post_img = imageData;
     }
 
@@ -154,11 +168,15 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
 
     //* checking whether the user provided a link
     if (gossipBody.link) {
-      await publishers.maliciousUrlDetection({
-        url: savedGossip.link,
-        gossip_id: savedGossip._id,
-        author_id: savedGossip.author_id,
-      });
+      await publishers.maliciousUrlDetection(
+        {
+          url: savedGossip.link,
+          gossip_id: savedGossip._id,
+          author_id: savedGossip.author_id,
+        },
+        uuid,
+        clientDetails
+      );
     }
   } catch (err) {
     if (err instanceof ErrorHandler) {
@@ -167,6 +185,8 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in saveGossip',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -178,13 +198,15 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
 };
 
 //* deletes the gossip only after checking whether the provided authorID matches the actual gossip authorID
-const deleteGossip = async (gossipID, authorID) => {
+const deleteGossip = async (gossipID, authorID, uuid, clientDetails) => {
   logger.info('requested deleteGossip service', {
     abstractionLevel: 'service',
     metaData: 'deleteGossip',
+    uuid,
+    clientDetails,
   });
   try {
-    const gossip = await postingDAL.gossip(gossipID);
+    const gossip = await postingDAL.gossip(gossipID, uuid, clientDetails);
 
     //* checks whether the provided authorID doesn't match the actual gossip authorID
     if (gossip.author_id !== authorID) {
@@ -196,7 +218,7 @@ const deleteGossip = async (gossipID, authorID) => {
       );
     }
 
-    return await postingDAL.deleteGossip(gossipID);
+    return await postingDAL.deleteGossip(gossipID, uuid, clientDetails);
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -204,6 +226,8 @@ const deleteGossip = async (gossipID, authorID) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in deleteGossip',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,
@@ -215,16 +239,26 @@ const deleteGossip = async (gossipID, authorID) => {
 };
 
 //* deletes an image by checking whether it is stored in imageKit or cloudinary then by communicating with the DAL layer
-const deleteImage = async (imageDetails) => {
+const deleteImage = async (imageDetails, uuid, clientDetails) => {
   logger.info('requested deleteImage service', {
     abstractionLevel: 'service',
     metaData: 'deleteImage',
+    uuid,
+    clientDetails,
   });
   try {
     if (imageDetails.service === 'imageKit') {
-      return await postingDAL.deleteImage(imageDetails.fileId);
+      return await postingDAL.deleteImage(
+        imageDetails.fileId,
+        uuid,
+        clientDetails
+      );
     }
-    return await postingDAL.deleteBackupImage(imageDetails.fileId);
+    return await postingDAL.deleteBackupImage(
+      imageDetails.fileId,
+      uuid,
+      clientDetails
+    );
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -232,6 +266,8 @@ const deleteImage = async (imageDetails) => {
     logger.error(err, {
       abstractionLevel: 'service',
       metaData: 'error in deleteImage',
+      uuid,
+      clientDetails,
     });
     throw new ErrorHandler(
       500,

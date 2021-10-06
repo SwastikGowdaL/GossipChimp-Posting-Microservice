@@ -3,6 +3,7 @@ const serenityCalculation = require('./serenityCalculation');
 const formatLink = require('./formatLink');
 const uniqueImageName = require('./uniqueImageName');
 const userAgent = require('./userAgent');
+const geoLookup = require('./geoLookup');
 
 module.exports = {
   convert,
@@ -10,4 +11,5 @@ module.exports = {
   formatLink,
   uniqueImageName,
   userAgent,
+  geoLookup,
 };
