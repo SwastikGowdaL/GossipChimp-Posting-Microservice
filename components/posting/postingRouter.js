@@ -1,8 +1,8 @@
 const express = require('express');
-const morgan = require('morgan');
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
+// const morgan = require('morgan');
+// const chalk = require('chalk');
+// const fs = require('fs');
+// const path = require('path');
 
 // const { agent } = require('superagent');
 const useragent = require('express-useragent');
@@ -18,9 +18,9 @@ const uuid = require('./middleware/uuid');
 
 const router = new express.Router();
 
-router.use(rateLimiter);
-
 router.use(useragent.express());
+
+router.use(rateLimiter);
 
 router.post(
   '/posting',

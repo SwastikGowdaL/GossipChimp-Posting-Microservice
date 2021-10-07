@@ -1,17 +1,17 @@
 const postingService = require('./postingService');
 const { ErrorHandler } = require('./postingErrors');
-const logger = require('./logger');
 const helpers = require('./helpers');
+const publishers = require('./publishers');
 
 //* saves the gossip
 const posting = async (req, res, next) => {
-  logger.info('posting request received', {
+  await publishers.logsPublisher('info', 'posting request received', {
     abstractionLevel: 'controller',
     metaData: 'posting',
     uuid: req.body.uuid,
     clientDetails: helpers.userAgent(req.useragent, req.ip),
   });
-  // console.log(helpers.userAgent(req.useragent, req.ip));
+
   const { uuid } = req.body;
   try {
     const gossipBody = JSON.parse(JSON.stringify(req.body)); // deeply cloning the req.body
@@ -37,7 +37,7 @@ const posting = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'controller',
       metaData: 'error in posting',
       uuid: req.body.uuid,
@@ -56,7 +56,7 @@ const posting = async (req, res, next) => {
 //* deletes the gossip
 const deleteGossip = async (req, res, next) => {
   try {
-    logger.info('delete request received', {
+    await publishers.logsPublisher('info', 'delete request received', {
       abstractionLevel: 'controller',
       metaData: 'deleteGossip',
       uuid: req.body.uuid,
@@ -76,7 +76,7 @@ const deleteGossip = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'controller',
       metaData: 'error in deleteGossip',
       uuid: req.body.uuid,
@@ -95,7 +95,7 @@ const deleteGossip = async (req, res, next) => {
 //! this is going to work only when the whole post_img details are provided
 const deleteImage = async (req, res, next) => {
   try {
-    logger.info('delete image request received', {
+    await publishers.logsPublisher('info', 'delete image request received', {
       abstractionLevel: 'controller',
       metaData: 'deleteImage',
       uuid: req.body.uuid,
@@ -119,7 +119,7 @@ const deleteImage = async (req, res, next) => {
     if (err instanceof ErrorHandler) {
       next(err);
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'controller',
       metaData: 'error in deleteImage',
       uuid: req.body.uuid,

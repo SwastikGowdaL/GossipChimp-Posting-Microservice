@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const axios = require('axios');
+// const axios = require('axios');
 const chalk = require('chalk');
 
 const config = require('../../../config/config');
@@ -7,7 +7,6 @@ const publishers = require('../publishers');
 require('../../../db/mongoose');
 const helpers = require('../helpers');
 const postingService = require('../postingService');
-const logger = require('../logger');
 
 let connection;
 let channel;
@@ -22,6 +21,22 @@ const connect = async () => {
   channel = await connection.createChannel();
   await channel.assertQueue('maliciousUrlDetection');
   await channel.assertQueue('deleteGossip');
+  await channel.assertQueue('logs');
+};
+
+//* consumes the logs from the logs queue and then sends those logs to datadog
+const logsConsumer = async () => {
+  channel.consume('logs', async (message) => {
+    const logs = JSON.parse(message.content.toString());
+    if (message) {
+      try {
+        await helpers.logDistinguish(logs);
+        channel.ack(message);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  });
 };
 
 //* consumes the messages from the maliciousUrlDetection queue and checks whether the provided link is malicious or not
@@ -30,7 +45,8 @@ const maliciousUrlDetection = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
-        logger.info(
+        await publishers.logsPublisher(
+          'info',
           'requested to dequeue url from maliciousUrlDetection queue and process',
           {
             abstractionLevel: 'consumer',
@@ -46,7 +62,7 @@ const maliciousUrlDetection = async () => {
         );
         if (isMalicious) {
           log(chalk.black.bgRed.bold('link unsafe'));
-          logger.warn('unsafe link detected', {
+          await publishers.logsPublisher('warn', 'unsafe link detected', {
             abstractionLevel: 'consumer',
             metaData: 'maliciousUrlDetection',
             uuid: msg.uuid,
@@ -66,7 +82,7 @@ const maliciousUrlDetection = async () => {
           channel.ack(message);
         }
       } catch (err) {
-        logger.error(err, {
+        await publishers.logsPublisher('error', err, {
           abstractionLevel: 'consumer',
           metaData: 'error in maliciousUrlDetection consumer',
           uuid: msg.uuid,
@@ -83,7 +99,8 @@ const deleteGossip = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
-        logger.info(
+        await publishers.logsPublisher(
+          'info',
           'requested to dequeue gossipID from deleteGossip queue and process',
           {
             abstractionLevel: 'consumer',
@@ -117,6 +134,12 @@ const deleteGossip = async () => {
         channel.ack(message);
       } catch (err) {
         log(chalk.red.bold(err));
+        await publishers.logsPublisher('error', err, {
+          abstractionLevel: 'consumer',
+          metaData: 'deleteGossip',
+          uuid: msg.uuid,
+          clientDetails: msg.clientDetails,
+        });
       }
     }
   });
@@ -127,6 +150,7 @@ const startConsumer = async () => {
   await connect();
   await maliciousUrlDetection();
   await deleteGossip();
+  await logsConsumer();
 };
 
 startConsumer();

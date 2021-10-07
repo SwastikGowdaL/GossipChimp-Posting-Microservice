@@ -2,6 +2,7 @@ const ImageKit = require('imagekit');
 const cloudinary = require('cloudinary');
 // const chalk = require('chalk');
 
+const publishers = require('./publishers');
 const logger = require('./logger');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
@@ -23,7 +24,7 @@ cloudinary.config({
 
 //* saves new gossip in the database
 exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
-  logger.info('requested saveGossip DAL', {
+  await publishers.logsPublisher('info', 'requested saveGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'saveGossip',
     uuid,
@@ -36,7 +37,7 @@ exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in saveGossip',
       uuid,
@@ -54,7 +55,7 @@ exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
 //* uploads the image to imageKit.io and returns the uploaded image details
 exports.saveImage = async (gossipImg, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
-    logger.info('requested saveImage DAL', {
+    publishers.logsPublisher('info', 'requested saveImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'saveImage',
       uuid,
@@ -84,7 +85,7 @@ exports.saveImage = async (gossipImg, uuid, clientDetails) =>
 
 //* deletes the gossip
 exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
-  logger.info('requested deleteGossip DAL', {
+  await publishers.logsPublisher('info', 'requested deleteGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteGossip',
     uuid,
@@ -105,7 +106,7 @@ exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in deleteGossip',
       uuid,
@@ -122,7 +123,7 @@ exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
 
 //* finds the gossip for the specified gossipID
 exports.gossip = async (gossipID, uuid, clientDetails) => {
-  logger.info('requested gossip DAL', {
+  await publishers.logsPublisher('info', 'requested gossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'gossip',
     uuid,
@@ -145,7 +146,7 @@ exports.gossip = async (gossipID, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
-    logger.error(err, {
+    await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in gossip',
       uuid,
@@ -163,7 +164,7 @@ exports.gossip = async (gossipID, uuid, clientDetails) => {
 //* deletes the image from the imagekit
 exports.deleteImage = async (imageID, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
-    logger.info('requested deleteImage DAL', {
+    publishers.logsPublisher('info', 'requested deleteImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'deleteImage',
       uuid,
@@ -186,7 +187,7 @@ exports.deleteImage = async (imageID, uuid, clientDetails) =>
 
 //* deletes the image from cloudinary
 exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
-  logger.info('requested deleteBackupImage DAL', {
+  await publishers.logsPublisher('info', 'requested deleteBackupImage DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteBackupImage',
     uuid,
