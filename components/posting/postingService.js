@@ -22,6 +22,7 @@ const load_model = async () => {
 
 //* uses the nsfw module and returns the imageSerenity level
 const imageModeration = async (image, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested image moderation service', {
     abstractionLevel: 'service',
     metaData: 'imageModeration',
@@ -37,6 +38,7 @@ const imageModeration = async (image, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in imageModeration',
@@ -54,6 +56,7 @@ const imageModeration = async (image, uuid, clientDetails) => {
 
 //* moderates whether the image is safe or not, if it is, then sends the image to Proxy saveImage for it to be saved in imagekit
 const saveImage = async (gossipImg, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested save Image service', {
     abstractionLevel: 'service',
     metaData: 'saveImage',
@@ -63,7 +66,8 @@ const saveImage = async (gossipImg, uuid, clientDetails) => {
   try {
     const imageSerenity = await imageModeration(gossipImg, uuid, clientDetails);
     if (imageSerenity === 'unsafe') {
-      await publishers.logsPublisher('info', 'image serenity unsafe', {
+      //* log
+      await publishers.logsPublisher('warn', 'image serenity unsafe', {
         abstractionLevel: 'service',
         metaData: 'image serenity unsafe',
         uuid,
@@ -81,6 +85,7 @@ const saveImage = async (gossipImg, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in saveImage',
@@ -98,6 +103,7 @@ const saveImage = async (gossipImg, uuid, clientDetails) => {
 
 //* checks whether the provided link is malicious or not
 const maliciousUrlDetection = async (link, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher(
     'info',
     'requested maliciousUrlDetection service',
@@ -116,6 +122,7 @@ const maliciousUrlDetection = async (link, uuid, clientDetails) => {
     );
     return response.data.unsafe;
   } catch (err) {
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in maliciousUrlDetection',
@@ -127,6 +134,7 @@ const maliciousUrlDetection = async (link, uuid, clientDetails) => {
 
 //* checks whether the provided text is profane or not, if it is profane then cleans it and returns the text, if not then returns as it is
 const badWordsFilter = async (text, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested badWordsFilter service', {
     abstractionLevel: 'service',
     metaData: 'badWordsFilter',
@@ -142,6 +150,7 @@ const badWordsFilter = async (text, uuid, clientDetails) => {
 
 //* saves the gossip & if image and link are there, then saves them as well
 const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested saveGossip service', {
     abstractionLevel: 'service',
     metaData: 'saveGossip',
@@ -184,6 +193,7 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in saveGossip',
@@ -201,6 +211,7 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
 
 //* deletes the gossip only after checking whether the provided authorID matches the actual gossip authorID
 const deleteGossip = async (gossipID, authorID, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested deleteGossip service', {
     abstractionLevel: 'service',
     metaData: 'deleteGossip',
@@ -225,6 +236,7 @@ const deleteGossip = async (gossipID, authorID, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in deleteGossip',
@@ -242,6 +254,7 @@ const deleteGossip = async (gossipID, authorID, uuid, clientDetails) => {
 
 //* deletes an image by checking whether it is stored in imageKit or cloudinary then by communicating with the DAL layer
 const deleteImage = async (imageDetails, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested deleteImage service', {
     abstractionLevel: 'service',
     metaData: 'deleteImage',
@@ -265,6 +278,7 @@ const deleteImage = async (imageDetails, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'service',
       metaData: 'error in deleteImage',

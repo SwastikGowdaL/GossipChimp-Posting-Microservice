@@ -10,6 +10,7 @@ const limiter = rateLimit({
   max: 3, // limit each IP to 3 requests per windowMs
   message: 'Too many requests sent,so please try again after a minute',
   onLimitReached: (req, res, options) => {
+    //* log
     publishers.logsPublisher('warn', 'rate limit reached', {
       abstractionLevel: 'middleware',
       metaData: 'rateLimit',

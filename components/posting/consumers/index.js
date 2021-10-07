@@ -45,6 +45,7 @@ const maliciousUrlDetection = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
+        //* log
         await publishers.logsPublisher(
           'info',
           'requested to dequeue url from maliciousUrlDetection queue and process',
@@ -62,6 +63,7 @@ const maliciousUrlDetection = async () => {
         );
         if (isMalicious) {
           log(chalk.black.bgRed.bold('link unsafe'));
+          //* log
           await publishers.logsPublisher('warn', 'unsafe link detected', {
             abstractionLevel: 'consumer',
             metaData: 'maliciousUrlDetection',
@@ -82,6 +84,7 @@ const maliciousUrlDetection = async () => {
           channel.ack(message);
         }
       } catch (err) {
+        //* log
         await publishers.logsPublisher('error', err, {
           abstractionLevel: 'consumer',
           metaData: 'error in maliciousUrlDetection consumer',
@@ -99,6 +102,7 @@ const deleteGossip = async () => {
     const msg = JSON.parse(message.content.toString());
     if (message) {
       try {
+        //* log
         await publishers.logsPublisher(
           'info',
           'requested to dequeue gossipID from deleteGossip queue and process',
@@ -134,6 +138,7 @@ const deleteGossip = async () => {
         channel.ack(message);
       } catch (err) {
         log(chalk.red.bold(err));
+        //* log
         await publishers.logsPublisher('error', err, {
           abstractionLevel: 'consumer',
           metaData: 'deleteGossip',

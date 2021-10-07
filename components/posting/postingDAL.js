@@ -24,6 +24,7 @@ cloudinary.config({
 
 //* saves new gossip in the database
 exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested saveGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'saveGossip',
@@ -37,6 +38,7 @@ exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in saveGossip',
@@ -55,6 +57,7 @@ exports.saveGossip = async (gossipBody, uuid, clientDetails) => {
 //* uploads the image to imageKit.io and returns the uploaded image details
 exports.saveImage = async (gossipImg, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
+    //* log
     publishers.logsPublisher('info', 'requested saveImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'saveImage',
@@ -69,7 +72,8 @@ exports.saveImage = async (gossipImg, uuid, clientDetails) =>
       },
       function (error, result) {
         if (error) {
-          logger.error(error, {
+          //* log
+          publishers.logsPublisher('error', error, {
             abstractionLevel: 'DAL',
             metaData: 'error in saveGossip',
             uuid,
@@ -85,6 +89,7 @@ exports.saveImage = async (gossipImg, uuid, clientDetails) =>
 
 //* deletes the gossip
 exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested deleteGossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteGossip',
@@ -106,6 +111,7 @@ exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in deleteGossip',
@@ -123,6 +129,7 @@ exports.deleteGossip = async (gossipID, uuid, clientDetails) => {
 
 //* finds the gossip for the specified gossipID
 exports.gossip = async (gossipID, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested gossip DAL', {
     abstractionLevel: 'DAL',
     metaData: 'gossip',
@@ -146,6 +153,7 @@ exports.gossip = async (gossipID, uuid, clientDetails) => {
     if (err instanceof ErrorHandler) {
       throw err;
     }
+    //* log
     await publishers.logsPublisher('error', err, {
       abstractionLevel: 'DAL',
       metaData: 'error in gossip',
@@ -164,6 +172,7 @@ exports.gossip = async (gossipID, uuid, clientDetails) => {
 //* deletes the image from the imagekit
 exports.deleteImage = async (imageID, uuid, clientDetails) =>
   new Promise((resolve, reject) => {
+    //* log
     publishers.logsPublisher('info', 'requested deleteImage DAL', {
       abstractionLevel: 'DAL',
       metaData: 'deleteImage',
@@ -172,7 +181,8 @@ exports.deleteImage = async (imageID, uuid, clientDetails) =>
     });
     imagekit.deleteFile(imageID, function (error1, result1) {
       if (error1) {
-        logger.error(error1, {
+        //* log
+        publishers.logsPublisher('error', error1, {
           abstractionLevel: 'DAL',
           metaData: 'error in deleteImage',
           uuid,
@@ -187,6 +197,7 @@ exports.deleteImage = async (imageID, uuid, clientDetails) =>
 
 //* deletes the image from cloudinary
 exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
+  //* log
   await publishers.logsPublisher('info', 'requested deleteBackupImage DAL', {
     abstractionLevel: 'DAL',
     metaData: 'deleteBackupImage',
@@ -195,7 +206,7 @@ exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
   });
   return cloudinary.v2.uploader.destroy(publicID, {}, function (error, result) {
     if (error) {
-      logger.error(error, {
+      publishers.logsPublisher('error', error, {
         abstractionLevel: 'DAL',
         metaData: 'error in deleteBackupImage',
         uuid,

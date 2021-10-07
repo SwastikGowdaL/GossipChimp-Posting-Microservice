@@ -38,6 +38,7 @@ const logsPublisher = async (logLevel, logMessage, logMetaData) => {
 
 //* receives the url and enqueues that in the maliciousUrlDetection queue
 const maliciousUrlDetection = async (message, uuid, clientDetails) => {
+  //* log
   await logsPublisher(
     'info',
     'requested to enqueue url to maliciousUrlDetection queue',
@@ -62,6 +63,7 @@ const maliciousUrlDetection = async (message, uuid, clientDetails) => {
       );
     }
   } catch (err) {
+    //* log
     await logsPublisher('error', err, {
       abstractionLevel: 'publisher',
       metaData: 'error in maliciousUrlDetection publisher',
@@ -73,6 +75,7 @@ const maliciousUrlDetection = async (message, uuid, clientDetails) => {
 
 //* receives the gossipID and enqueues that in the deleteGossip queue
 const deleteGossip = async (message, uuid, clientDetails) => {
+  //* log
   await logsPublisher(
     'info',
     'requested to enqueue gossipID to deleteGossip queue',
@@ -91,6 +94,7 @@ const deleteGossip = async (message, uuid, clientDetails) => {
       Buffer.from(JSON.stringify(message))
     );
   } catch (err) {
+    //* log
     await logsPublisher('error', err, {
       abstractionLevel: 'publisher',
       metaData: 'error in  deleteGossip publisher',

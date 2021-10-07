@@ -1,10 +1,11 @@
 const express = require('express');
+
 // const morgan = require('morgan');
 // const chalk = require('chalk');
 // const fs = require('fs');
 // const path = require('path');
-
 // const { agent } = require('superagent');
+
 const useragent = require('express-useragent');
 const postingController = require('./postingController');
 const validateSchema = require('./middleware/validateGossip');
@@ -22,6 +23,7 @@ router.use(useragent.express());
 
 router.use(rateLimiter);
 
+//* router for receiving "posting" post request
 router.post(
   '/posting',
   auth,
@@ -31,6 +33,7 @@ router.post(
   postingController.posting
 );
 
+//* router for receiving "delete Gossip" delete  request
 router.delete(
   '/post',
   auth,
@@ -39,6 +42,7 @@ router.delete(
   postingController.deleteGossip
 );
 
+//* router for receiving "delete image" delete request
 router.delete('/image', auth, uuid, postingController.deleteImage);
 
 router.use(errorHandlingMiddleware);
