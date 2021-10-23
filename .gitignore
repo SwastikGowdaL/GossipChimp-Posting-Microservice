@@ -2,3 +2,9 @@
 .env
 .vscode
 coverage/
+components/posting/__mocks__/postingDAL.js
+components/posting/__mocks__/postingController.js
+components/posting/__mocks__/postingService.js
+components/posting/postingControllerError.test.js
+components/posting/postingDALError.test.js
+components/posting/postingServiceError.test.js
