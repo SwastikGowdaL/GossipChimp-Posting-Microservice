@@ -15,3 +15,8 @@
 ![Gossip chimp posting microservice Log Management](https://user-images.githubusercontent.com/68393994/137851774-c63a4170-7ddb-4cae-9376-5f8f8f185f7b.jpg)
 
 ### For explanation on posting microservice visit this [website](https://shiny-palladium-f35.notion.site/GossipChimp-Posting-Microservice-Explanation-c2c9b409e65646718e8684ded727c021)
+
+## Code Quality
+
+![codacy code qa](https://user-images.githubusercontent.com/68393994/138555300-595219cf-b5af-4e1c-b78e-0d9afa2d55d1.jpg)
+
