@@ -2,7 +2,7 @@
 
 ![GossipChimp logo](https://i.ibb.co/nngkmjY/logo.png)
 
-### For explanation on posting microservice visit this [website](https://shiny-palladium-f35.notion.site/GossipChimp-Posting-Microservice-Explanation-c2c9b409e65646718e8684ded727c021)
+### Explanation on gossipChimp posting microservice is available in this [website](https://shiny-palladium-f35.notion.site/GossipChimp-Posting-Microservice-Explanation-c2c9b409e65646718e8684ded727c021)
 
 ## GossipChimp Posting Microservice flowchart
 
