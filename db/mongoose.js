@@ -12,7 +12,9 @@ mongoose.connect(dbConn, {
 
 mongoose.connection
   .once('open', () => {
-    if (config.ENV !== 'test') console.log('connected');
+    if (config.ENV !== 'test') {
+      console.log('connected');
+    }
   })
   .on('error', (error) => {
     console.log('err', error);
