@@ -9,6 +9,7 @@ if (config.ENV !== 'dev') {
   throw new Error('ENV should be changed to dev');
 }
 
+// deepcode ignore PromiseNotCaughtNode: <please specify a reason of ignoring this>
 postingService.load_model().then(() =>
   app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
