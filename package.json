@@ -70,7 +70,7 @@
     "install-peerdeps": "^3.0.3",
     "jpeg-js": "^0.4.3",
     "mongodb": "^4.1.1",
-    "mongoose": "^6.0.5",
+    "mongoose": "^6.0.9",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
     "nsfwjs": "^2.4.1",
