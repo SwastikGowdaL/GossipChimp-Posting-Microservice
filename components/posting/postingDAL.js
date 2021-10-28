@@ -1,5 +1,6 @@
 const ImageKit = require('imagekit');
 const cloudinary = require('cloudinary');
+const redis = require('redis');
 // const chalk = require('chalk');
 
 const publishers = require('./publishers');
@@ -7,6 +8,10 @@ const logger = require('./logger');
 const Gossip = require('../../models/gossip');
 const config = require('../../config/config');
 const { ErrorHandler } = require('./postingErrors');
+
+const redisClient = redis.createClient();
+
+const DEFAULT_EXPIRATION = 86400;
 
 const imagekit = new ImageKit({
   publicKey: config.IMAGE_KIT.publicKey,
@@ -215,4 +220,35 @@ exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
     }
     return result;
   });
+};
+
+//* caches the gossip in redis
+exports.cacheGossip = async (authorID, gossipID) => {
+  try {
+    redisClient.LPUSH(authorID, gossipID);
+    redisClient.EXPIRE(authorID, DEFAULT_EXPIRATION);
+  } catch (err) {
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL cacheGossip()',
+      false
+    );
+  }
+};
+
+//* count the number of cached gossips for specific authorID
+exports.countOfCachedGossips = async (authorID) =>
+  new Promise((resolve, reject) => {
+    redisClient.LLEN(authorID, async (error, data) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(data);
+    });
+  });
+
+//* pop one cached gossip
+exports.popOneCachedGossip = async (authorID) => {
+  redisClient.RPOP(authorID);
 };

@@ -1,6 +1,7 @@
 const nsfw = require('nsfwjs');
 const Filter = require('bad-words');
 const axios = require('axios');
+const redis = require('redis');
 // const chalk = require('chalk');
 
 const helpers = require('./helpers');
@@ -9,6 +10,11 @@ const { ErrorHandler } = require('./postingErrors');
 const config = require('../../config/config');
 const publishers = require('./publishers');
 const proxies = require('./proxies');
+
+const redisClient = redis.createClient();
+
+const DEFAULT_EXPIRATION = 86400;
+const CACHE_LIMIT = 10;
 
 //* this variable is used to load the models needed for imageModeration
 let _model;
@@ -148,6 +154,29 @@ const badWordsFilter = async (text, uuid, clientDetails) => {
   return text;
 };
 
+//* caches the gossip by communicating with DAL layer
+const cacheGossip = async (authorID, gossipID) => {
+  try {
+    await postingDAL.cacheGossip(authorID, gossipID);
+    const countOfCachedGossips = await postingDAL.countOfCachedGossips(
+      authorID
+    );
+    if (countOfCachedGossips > CACHE_LIMIT) {
+      await postingDAL.popOneCachedGossip(authorID);
+    }
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingService cacheGossip()',
+      false
+    );
+  }
+};
+
 //* saves the gossip & if image and link are there, then saves them as well
 const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
   //* log
@@ -188,6 +217,8 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
         uuid,
         clientDetails
       );
+    } else {
+      await cacheGossip(savedGossip.author_id, String(savedGossip._id));
     }
   } catch (err) {
     if (err instanceof ErrorHandler) {
@@ -301,6 +332,7 @@ const postingService = {
   deleteGossip,
   deleteImage,
   maliciousUrlDetection,
+  cacheGossip,
 };
 
 module.exports = postingService;
