@@ -154,16 +154,36 @@ const badWordsFilter = async (text, uuid, clientDetails) => {
   return text;
 };
 
-//* caches the gossip by communicating with DAL layer
-const cacheGossip = async (authorID, gossipID) => {
+//* caches the gossipID by communicating with DAL layer
+const cacheGossipID = async (authorID, gossipID) => {
   try {
-    await postingDAL.cacheGossip(authorID, gossipID);
+    await postingDAL.cacheGossipID(authorID, gossipID);
     const countOfCachedGossips = await postingDAL.countOfCachedGossips(
       authorID
     );
     if (countOfCachedGossips > CACHE_LIMIT) {
-      await postingDAL.popOneCachedGossip(authorID);
+      await postingDAL.popOneCachedGossipID(authorID);
     }
+  } catch (err) {
+    if (err instanceof ErrorHandler) {
+      throw err;
+    }
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingService cacheGossipID()',
+      false
+    );
+  }
+};
+
+//* caches the gossip by communicating with DAL layer
+const cacheGossip = async (savedGossip) => {
+  try {
+    return await postingDAL.cacheGossip(
+      String(savedGossip._id),
+      JSON.stringify(savedGossip)
+    );
   } catch (err) {
     if (err instanceof ErrorHandler) {
       throw err;
@@ -213,12 +233,14 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
           url: savedGossip.link,
           gossip_id: savedGossip._id,
           author_id: savedGossip.author_id,
+          gossipData: savedGossip,
         },
         uuid,
         clientDetails
       );
     } else {
-      await cacheGossip(savedGossip.author_id, String(savedGossip._id));
+      await cacheGossipID(savedGossip.author_id, String(savedGossip._id));
+      await cacheGossip(savedGossip);
     }
   } catch (err) {
     if (err instanceof ErrorHandler) {
@@ -332,6 +354,7 @@ const postingService = {
   deleteGossip,
   deleteImage,
   maliciousUrlDetection,
+  cacheGossipID,
   cacheGossip,
 };
 

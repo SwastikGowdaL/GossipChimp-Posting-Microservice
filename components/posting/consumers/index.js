@@ -81,7 +81,8 @@ const maliciousUrlDetection = async () => {
           channel.ack(message);
         } else {
           log(chalk.black.bgGreen.bold('link safe'));
-          await postingService.cacheGossip(msg.author_id, msg.gossip_id);
+          await postingService.cacheGossipID(msg.author_id, msg.gossip_id);
+          await postingService.cacheGossip(msg.gossipData);
           channel.ack(message);
         }
       } catch (err) {

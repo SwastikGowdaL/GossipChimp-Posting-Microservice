@@ -222,8 +222,8 @@ exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
   });
 };
 
-//* caches the gossip in redis
-exports.cacheGossip = async (authorID, gossipID) => {
+//* caches the gossipID in redis
+exports.cacheGossipID = async (authorID, gossipID) => {
   try {
     redisClient.LPUSH(authorID, gossipID);
     redisClient.EXPIRE(authorID, DEFAULT_EXPIRATION);
@@ -231,7 +231,7 @@ exports.cacheGossip = async (authorID, gossipID) => {
     throw new ErrorHandler(
       500,
       err.message,
-      'error in postingDAL cacheGossip()',
+      'error in postingDAL cacheGossipID()',
       false
     );
   }
@@ -248,7 +248,29 @@ exports.countOfCachedGossips = async (authorID) =>
     });
   });
 
-//* pop one cached gossip
-exports.popOneCachedGossip = async (authorID) => {
-  redisClient.RPOP(authorID);
+//* pop one cached gossipID
+exports.popOneCachedGossipID = async (authorID) => {
+  try {
+    redisClient.RPOP(authorID);
+  } catch (err) {
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL popOneCachedGossipID()',
+      false
+    );
+  }
+};
+
+exports.cacheGossip = async (gossipID, savedGossip) => {
+  try {
+    redisClient.SETEX(gossipID, DEFAULT_EXPIRATION, savedGossip);
+  } catch (err) {
+    throw new ErrorHandler(
+      500,
+      err.message,
+      'error in postingDAL cacheGossip()',
+      false
+    );
+  }
 };
