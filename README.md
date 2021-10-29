@@ -10,7 +10,7 @@
 
 ## GossipChimp Posting Microservice architecture
 
-![gossipChimp Posting_Microservice arch](https://user-images.githubusercontent.com/68393994/137851754-fd55917c-8583-4841-8fba-56265c15195d.jpg)
+![gossipChimp Posting_Microservice arch](https://user-images.githubusercontent.com/68393994/139427468-5978c5b7-83db-4edc-9498-66e315624b81.jpg)
 
 ## GossipChimp Posting Microservice Log Management
 
