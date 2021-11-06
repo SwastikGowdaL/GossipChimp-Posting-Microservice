@@ -241,6 +241,12 @@ const saveGossip = async (gossipBody, gossipImg, uuid, clientDetails) => {
     } else {
       await cacheGossipID(savedGossip.author_id, String(savedGossip._id));
       await cacheGossip(savedGossip);
+      for (const hashtagID of savedGossip.hashtags) {
+        await cacheGossipID(
+          helpers.hashtags(hashtagID),
+          String(savedGossip._id)
+        );
+      }
     }
   } catch (err) {
     if (err instanceof ErrorHandler) {

@@ -5,6 +5,7 @@ const uniqueImageName = require('./uniqueImageName');
 const userAgent = require('./userAgent');
 const geoLookup = require('./geoLookup');
 const logDistinguish = require('./logDistinguish');
+const hashtags = require('./hashtags');
 
 module.exports = {
   convert,
@@ -14,4 +15,5 @@ module.exports = {
   userAgent,
   geoLookup,
   logDistinguish,
+  hashtags,
 };

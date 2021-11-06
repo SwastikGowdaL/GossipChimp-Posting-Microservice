@@ -226,6 +226,7 @@ exports.deleteBackupImage = async (publicID, uuid, clientDetails) => {
 exports.cacheGossipID = async (authorID, gossipID) => {
   try {
     redisClient.LPUSH(authorID, gossipID);
+    if (authorID.includes('hashtag')) return;
     redisClient.EXPIRE(authorID, DEFAULT_EXPIRATION);
   } catch (err) {
     throw new ErrorHandler(
