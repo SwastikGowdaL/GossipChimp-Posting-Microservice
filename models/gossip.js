@@ -24,6 +24,11 @@ const gossipSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  reports: [
+    {
+      type: String,
+    },
+  ],
   comments: [
     {
       commenter_id: {
