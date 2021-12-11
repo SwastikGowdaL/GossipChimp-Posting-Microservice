@@ -1,4 +1,4 @@
-# GossipChimp
+# GossipChimp Posting Microservice
 
 ![GossipChimp logo](https://i.ibb.co/nngkmjY/logo.png)
 
