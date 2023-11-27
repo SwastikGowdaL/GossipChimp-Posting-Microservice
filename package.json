@@ -66,7 +66,7 @@
     "form-data": "^4.0.0",
     "geoip-lite": "^1.4.2",
     "helmet": "^4.6.0",
-    "imagekit": "^3.2.2",
+    "imagekit": "^4.0.0",
     "install-peerdeps": "^3.0.3",
     "jpeg-js": "^0.4.3",
     "mongodb": "^4.1.1",
