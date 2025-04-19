@@ -67,7 +67,7 @@
     "geoip-lite": "^1.4.2",
     "helmet": "^4.6.0",
     "imagekit": "^3.2.2",
-    "install-peerdeps": "^3.0.3",
+    "install-peerdeps": "^3.0.7",
     "jpeg-js": "^0.4.3",
     "mongodb": "^4.1.1",
     "mongoose": "^6.0.5",
