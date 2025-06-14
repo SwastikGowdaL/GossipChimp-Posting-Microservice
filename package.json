@@ -50,7 +50,7 @@
     "cors": "^2.8.5",
     "datadog-winston": "^1.5.1",
     "dotenv": "^10.0.0",
-    "eslint": "^7.8.1",
+    "eslint": "^9.1.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-wesbos": "^1.0.1",
